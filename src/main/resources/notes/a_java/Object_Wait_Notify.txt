@@ -1,0 +1,76 @@
+Excellent question — this often confuses even experienced developers. The reason `wait()`, `notify()`, and `notifyAll()` are part of the **`Object` class** (and not `Thread`, `Runnable`, or any concurrency-specific class) comes down to **how Java's intrinsic locks and thread coordination are designed to work at the object level**.
+
+---
+
+### 🔍 **Why are `wait()`, `notify()`, `notifyAll()` in `Object` and not `Thread`?**
+
+#### 1. **Every object in Java can be a monitor**
+
+* In Java, **every object** has an **intrinsic lock (monitor)**.
+* Synchronization in Java is done on **objects**, not on threads:
+
+  ```java
+  synchronized(myObject) {
+      // thread acquires myObject's lock
+  }
+  ```
+* Since thread coordination (`wait/notify`) relies on the **monitor of an object**, these methods are tied to **objects**, not threads.
+
+#### 2. **Thread communication happens via shared objects**
+
+* Threads don’t signal each other directly; they communicate via shared objects.
+* Example:
+
+  ```java
+  synchronized (sharedQueue) {
+      sharedQueue.wait();      // Wait on the object's monitor
+  }
+
+  synchronized (sharedQueue) {
+      sharedQueue.notify();    // Notify a thread waiting on the same object
+  }
+  ```
+
+#### 3. **Design intent: Wait on the resource, not the thread**
+
+* A thread waiting on `obj.wait()` is saying: **“I’m waiting for a condition related to `obj` to change.”**
+* Not: “I’m waiting for another thread to do something.” (That's a different pattern.)
+
+---
+
+### 🤔 But... not all objects are used for multithreading?
+
+You're right — **most objects won’t be involved in synchronization**, and that’s fine. But since **any object *can* be**, `wait()`/`notify()` need to be available universally.
+
+Including them in a special interface like `Runnable` or `Thread` would **limit this capability only to certain classes**, which:
+
+* Would break the flexible synchronization model,
+* Would make synchronized blocks (`synchronized(obj)`) less meaningful for non-Thread types,
+* Would introduce complexity in allowing arbitrary objects to become coordination points.
+
+---
+
+### 🔄 Analogy
+
+Think of **locks as being attached to doors (objects)**, not to the people (threads) passing through them.
+
+So:
+
+* `wait()` = the person **waits near the door**,
+* `notify()` = another person **knocks on the door** to signal,
+* Since **doors (objects)** are where the waiting happens, the methods logically belong to **the object**, not the person.
+
+---
+
+### ✅ Summary
+
+| Point                          | Explanation                                       |
+| ------------------------------ | ------------------------------------------------- |
+| 🔐 Locking happens on          | Objects, not threads                              |
+| 🧵 Threads coordinate via      | Shared objects                                    |
+| 📍 `wait/notify` need to be on | The object whose lock is used for synchronization |
+| 🔧 Object class chosen because | All objects need the capability, not just threads |
+
+---
+
+Let me know if you'd like a visual or code demo to clarify further!

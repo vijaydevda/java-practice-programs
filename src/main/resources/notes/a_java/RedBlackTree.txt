@@ -1,0 +1,97 @@
+A **Red-Black Tree** is a type of **self-balancing binary search tree (BST)** that ensures the tree remains approximately balanced after insertions and deletions, which guarantees **O(log n)** time complexity for search, insert, and delete operations.
+
+---
+
+### 🌳 Why Use Red-Black Trees?
+
+In a normal Binary Search Tree (BST), operations can degrade to **O(n)** in the worst case (like a linked list). A Red-Black Tree maintains balance automatically to prevent this.
+
+---
+
+### 🎯 Key Properties of a Red-Black Tree
+
+1. **Node Color**: Each node is either **red** or **black**.
+2. **Root Property**: The **root** node is always **black**.
+3. **Leaf Property**: All **null leaves** (external nodes) are considered **black**.
+4. **Red Property**: A **red node cannot have a red child** (no two red nodes in a row).
+5. **Black Height Property**: Every path from a node to its descendant leaves contains the **same number of black nodes**.
+
+These properties ensure the tree remains **balanced**, with its height bounded by `2 * log(n + 1)`.
+
+---
+
+### 🔁 Operations and Balancing
+
+* **Insertion**:
+
+  * Insert like in a normal BST, but color the new node **red**.
+  * Fix violations by **recoloring** and/or **rotations** (left or right).
+* **Deletion**:
+
+  * More complex than insertion.
+  * May cause multiple violations; fixing involves **double black nodes**, rotations, and recoloring.
+
+---
+
+### 🔄 Rotations
+
+Red-Black Tree uses two types of tree rotations to maintain balance:
+
+* **Left Rotation**:
+
+  ```
+      x                 y
+     / \               / \
+    a   y     ==>     x   c
+       / \           / \
+      b   c         a   b
+  ```
+
+* **Right Rotation**:
+
+  ```
+        y             x
+       / \           / \
+      x   c   ==>   a   y
+     / \               / \
+    a   b             b   c
+  ```
+
+---
+
+### 🧠 Example (Conceptually)
+
+Let’s say we insert values: `10, 20, 30`
+
+* Inserting 10 → becomes root (black).
+* Insert 20 → red child of black → OK.
+* Insert 30 → violates red-red (20 and 30 both red) → perform rotation and recoloring.
+
+Result: Balanced tree maintaining red-black rules.
+
+---
+
+### 📈 Time Complexity
+
+| Operation | Time Complexity |
+| --------- | --------------- |
+| Search    | O(log n)        |
+| Insert    | O(log n)        |
+| Delete    | O(log n)        |
+
+---
+
+### 🧰 Use Cases in Java
+
+* **TreeMap** and **TreeSet** in Java are implemented using **Red-Black Trees**.
+* Also used internally in **HashMap** (Java 8+) when the number of items in a bucket exceeds a threshold (to improve worst-case performance from O(n) to O(log n)).
+
+---
+
+### ✅ Summary
+
+* Self-balancing BST using color rules and rotations.
+* Guarantees log(n) time complexity.
+* Used in Java’s TreeMap, TreeSet, and HashMap (as bucket tree structure).
+
+Would you like a visual diagram or code example as well?

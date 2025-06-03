@@ -1,0 +1,110 @@
+A **private constructor** in Java is used to **restrict instantiation** of a class. Developers typically use it in **specific design scenarios** where object creation needs to be tightly controlled.
+
+---
+
+## ✅ **When to Use a Private Constructor**
+
+### 1. **Singleton Pattern**
+
+To ensure only **one instance** of a class exists:
+
+```java
+public class Singleton {
+    private static final Singleton INSTANCE = new Singleton(); // eager init
+
+    private Singleton() {} // prevent external instantiation
+
+    public static Singleton getInstance() {
+        return INSTANCE;
+    }
+}
+```
+
+🔹 *Prevents others from using `new Singleton()`.*
+
+---
+
+### 2. **Utility or Helper Classes**
+
+When a class only contains **static methods** and should **never be instantiated**:
+
+```java
+public class MathUtils {
+    private MathUtils() {
+        throw new AssertionError("Cannot instantiate utility class");
+    }
+
+    public static int add(int a, int b) {
+        return a + b;
+    }
+}
+```
+
+🔹 *Avoids unnecessary object creation and enforces intent.*
+
+---
+
+### 3. **Constant Holder Classes**
+
+When a class only holds **public static final constants**:
+
+```java
+public class Constants {
+    public static final String APP_NAME = "MyApp";
+
+    private Constants() {}  // Prevent instantiation
+}
+```
+
+---
+
+### 4. **Factory Pattern**
+
+When you want to **force object creation via a factory method**:
+
+```java
+public class Connection {
+    private Connection() {
+        // private constructor
+    }
+
+    public static Connection create() {
+        return new Connection(); // controlled creation
+    }
+}
+```
+
+---
+
+### 5. **Enum-like Classes (Pre-Java 5)**
+
+Used before Java had `enum`, to define a fixed set of instances:
+
+```java
+public class Status {
+    public static final Status ACTIVE = new Status();
+    public static final Status INACTIVE = new Status();
+
+    private Status() {}
+}
+```
+
+---
+
+## 🚫 What It Prevents:
+
+* External instantiation using `new`
+* Subclassing (in some cases, when combined with `final`)
+* Misuse of classes not meant to be instantiated
+
+---
+
+## ✅ Summary: Use a private constructor when:
+
+| Scenario          | Reason                         |
+| ----------------- | ------------------------------ |
+| Singleton         | Limit to one instance          |
+| Utility class     | Prevent object creation        |
+| Constant holder   | Just a container for constants |
+| Factory method    | Centralize object creation     |
+| Enum-like control | Fixed set of instances         |

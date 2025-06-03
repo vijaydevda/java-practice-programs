@@ -1,0 +1,72 @@
+Great question!
+
+The interfaces like **`BeanFactory`** and **`ApplicationContext`** in Spring are called **IoC (Inversion of Control) containers** because they are **responsible for managing the lifecycle, configuration, and dependencies of application objects (beans)** — effectively **inverting control** from the application code to the framework.
+
+Let’s break this down:
+
+---
+
+## 🔄 What is Inversion of Control (IoC)?
+
+**IoC** is a design principle where the control of object creation and dependency management is **handed over to a framework or container** instead of the application code managing it directly.
+
+### Traditional (non-IoC) Code:
+
+```java
+Service service = new ServiceImpl();  // You create and control the object
+```
+
+### With Spring IoC:
+
+```java
+ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+Service service = context.getBean(Service.class);  // Spring creates & injects the object
+```
+
+---
+
+## 🏗️ Why `BeanFactory` and `ApplicationContext` are Called IoC Containers
+
+### ✅ 1. **They Control Object Creation (Instantiation)**
+
+* You define beans in config (XML, annotations, Java config).
+* The container **creates those objects**, not your code.
+
+### ✅ 2. **They Manage Dependency Injection**
+
+* The container **injects required dependencies** (via constructor, setter, or field), based on configuration or annotations like `@Autowired`.
+
+### ✅ 3. **They Manage Object Lifecycle**
+
+* Beans can hook into lifecycle phases using interfaces like `InitializingBean`, `DisposableBean`, or annotations like `@PostConstruct`.
+
+### ✅ 4. **They Provide Loose Coupling**
+
+* You rely on **interfaces and configuration**, not direct `new` calls, which improves modularity and testability.
+
+---
+
+## 📦 So, What Makes Them "Containers"?
+
+Like physical containers **hold and manage objects**, the **IoC containers in Spring**:
+
+* **Hold bean definitions**
+* **Create and configure beans**
+* **Inject dependencies**
+* **Manage bean lifecycle (initialization, destruction)**
+* **Provide context and services (events, resource loading, etc.)**
+
+---
+
+## 📘 Summary
+
+| Term                   | Explanation                                                            |
+| ---------------------- | ---------------------------------------------------------------------- |
+| **IoC**                | A principle where the framework controls object creation and injection |
+| **Container**          | A system that manages components (beans) for you                       |
+| **BeanFactory**        | The simplest Spring IoC container (core interface)                     |
+| **ApplicationContext** | A more feature-rich IoC container used in most real-world Spring apps  |
+
+> **Therefore**, these interfaces are called **IoC Containers** because they **invert control** of bean management from the application to the **Spring framework**, enabling dependency injection and loose coupling.
+
+Let me know if you’d like a diagram or analogy to visualize IoC better!

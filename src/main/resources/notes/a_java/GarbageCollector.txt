@@ -1,0 +1,122 @@
+### **Garbage Collector in Java: Overview, Working, and Types**
+
+#### ✅ What is Garbage Collection in Java?
+
+Garbage Collection (GC) in Java is the **process of automatically identifying and reclaiming memory** used by objects that are no longer reachable in the application. It prevents memory leaks and helps manage heap memory efficiently.
+
+> Java’s GC is part of the **Java Virtual Machine (JVM)** and removes the need for manual memory management (like in C/C++ with `malloc()`/`free()`).
+
+---
+
+### 🧠 How Does Garbage Collection Work?
+
+Java uses a concept called **reachability** to determine if an object is still needed:
+
+* **Reachable object**: Can be accessed through any chain of references from **GC roots** (like static fields, method stack, local variables).
+* **Unreachable object**: No references from any live thread or GC root → **eligible for collection**.
+
+#### GC Workflow:
+
+1. **Mark Phase**: GC identifies which objects are reachable.
+2. **Sweep Phase**: GC reclaims memory occupied by unreachable objects.
+3. **Compaction (optional)**: Moves live objects together to eliminate fragmentation and free up continuous memory blocks.
+
+---
+
+### 🧩 Types of Garbage Collectors in Java
+
+The JVM provides **different garbage collectors**, optimized for various use-cases and hardware. You can select them via JVM options (`-XX:+UseG1GC`, etc.).
+
+---
+
+#### 1. **Serial Garbage Collector**
+
+* **JVM Option**: `-XX:+UseSerialGC`
+* **Working**: Uses a single thread for all GC work (minor and major).
+* **Best For**: Small applications with single CPU and low memory footprint.
+* **Phases**: Stop-the-world (STW) GC pauses entire application.
+
+---
+
+#### 2. **Parallel Garbage Collector (Throughput GC)**
+
+* **JVM Option**: `-XX:+UseParallelGC`
+* **Working**: Multiple threads used for **young** generation GC (and optionally for old gen).
+* **Best For**: Applications needing high throughput and can tolerate longer pause times.
+* **Focus**: Maximize application throughput by minimizing GC overhead.
+
+---
+
+#### 3. **Concurrent Mark-Sweep (CMS) Collector**
+
+* **JVM Option**: `-XX:+UseConcMarkSweepGC`
+* **Working**:
+
+  * **Young Gen**: Parallel and STW.
+  * **Old Gen**: Concurrent GC with multiple threads to reduce pause time.
+* **Best For**: Low-latency applications (e.g., web servers).
+* **Drawback**: Memory fragmentation possible.
+* ❌ Deprecated in Java 9 and removed in Java 14.
+
+---
+
+#### 4. **G1 (Garbage First) Collector**
+
+* **JVM Option**: `-XX:+UseG1GC`
+* **Working**:
+
+  * Divides heap into **regions** (instead of contiguous generations).
+  * Prioritizes regions with most garbage (“garbage first”).
+  * Performs concurrent and parallel operations.
+* **Best For**: Applications needing predictable pause times and large heaps (>4GB).
+* **Focus**: Low pause time with good throughput.
+
+---
+
+#### 5. **Z Garbage Collector (ZGC)**
+
+* **JVM Option**: `-XX:+UseZGC`
+* **Working**: Designed for **very low pause times (<10ms)** and **very large heaps (up to TBs)**.
+* **Best For**: Big data apps, latency-sensitive services.
+* **Pause time is independent of heap size**.
+* Introduced in Java 11 (production-ready in Java 15+).
+
+---
+
+#### 6. **Shenandoah GC**
+
+* **JVM Option**: `-XX:+UseShenandoahGC`
+* **Working**: Similar goal as ZGC — **low pause time GC**.
+* Does **concurrent compaction**, unlike others.
+* From RedHat; included in OpenJDK.
+* Best for: Applications where **pause time must be low**, even with large heaps.
+
+---
+
+### 📌 Summary Comparison
+
+| GC Type       | Pause Time | Throughput | Heap Size Suitability | Notes                     |
+| ------------- | ---------- | ---------- | --------------------- | ------------------------- |
+| Serial GC     | High       | Low        | Small                 | Simple, single-threaded   |
+| Parallel GC   | Medium     | High       | Medium to large       | Throughput-focused        |
+| CMS GC        | Low        | Medium     | Medium                | Deprecated                |
+| G1 GC         | Low        | High       | Medium to large       | Default since Java 9      |
+| ZGC           | Very Low   | Medium     | Very large            | Scalable, cutting-edge    |
+| Shenandoah GC | Very Low   | Medium     | Large                 | Low pause with compaction |
+
+---
+
+### 🧪 Bonus: How to Monitor and Tune GC
+
+* Use tools like **JVisualVM**, **JConsole**, **GC logs**, and **JFR (Java Flight Recorder)**.
+* JVM flags to analyze GC:
+
+  ```bash
+  -Xlog:gc*           # For Java 9+
+  -verbose:gc         # For Java 8
+  -XX:+PrintGCDetails -XX:+PrintGCDateStamps
+  ```
+
+---
+
+Let me know if you want a GC flowchart, or code examples showing GC in action.

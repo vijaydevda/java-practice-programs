@@ -1,0 +1,102 @@
+In **Spring Boot**, auto-configuration is a powerful feature that automatically configures beans
+based on the dependencies on the classpath. However, you can **disable it** either **completely** or **selectively**,
+depending on your need.
+
+---
+
+## ✅ 1. **Disable Specific Auto-Configurations**
+
+This is the most common way.
+
+### 🔸 Using `exclude` in `@SpringBootApplication`
+
+```java
+@SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
+public class MyApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MyApplication.class, args);
+    }
+}
+```
+
+* You can exclude one or more auto-configurations using a list.
+
+---
+
+### 🔸 Using `excludeName` (when class is not available at compile-time)
+
+```java
+@SpringBootApplication(excludeName = { "org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration" })
+```
+
+---
+
+## ✅ 2. **Disable via `application.properties` or `application.yml`**
+
+This is useful when you want to disable auto-config without changing code.
+
+### Example:
+
+```properties
+spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+```
+
+> You can disable multiple configurations using a comma-separated list.
+
+---
+
+## ✅ 3. **Use `@EnableAutoConfiguration` Instead of `@SpringBootApplication`**
+
+Under the hood, `@SpringBootApplication` includes:
+
+```java
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan
+```
+
+So you can replace it with `@EnableAutoConfiguration(exclude = ...)` if you want finer control.
+
+### Example:
+
+```java
+@EnableAutoConfiguration(exclude = { JpaRepositoriesAutoConfiguration.class })
+public class CustomConfig { ... }
+```
+
+---
+
+## ✅ 4. **Conditional Exclusion Using Custom Conditions**
+
+You can create custom conditions for excluding auto-config classes by using:
+
+* `@ConditionalOnProperty`
+* `@ConditionalOnClass`
+* `@ConditionalOnMissingBean`
+
+This is usually done when writing your own custom auto-configuration modules.
+
+---
+
+## 🚫 Disable All Auto-Configuration (Not Recommended)
+
+This is **rare and not recommended**, but for learning purposes:
+
+```java
+@SpringBootApplication(exclude = AutoConfigurationImportSelector.class)
+```
+
+But this would likely **break Spring Boot's core functionality**. Prefer selective exclusion instead.
+
+---
+
+## 🧾 Summary
+
+| Method                                    | Description                          | When to Use                             |
+| ----------------------------------------- | ------------------------------------ | --------------------------------------- |
+| `exclude` in `@SpringBootApplication`     | Exclude specific auto-config classes | Most common, simple                     |
+| `spring.autoconfigure.exclude`            | Externalized configuration           | Configurable per environment            |
+| `@EnableAutoConfiguration(exclude = ...)` | Fine-grained control                 | When not using `@SpringBootApplication` |
+| Custom Conditions                         | Write conditional auto-config        | For library/module developers           |
+
+---

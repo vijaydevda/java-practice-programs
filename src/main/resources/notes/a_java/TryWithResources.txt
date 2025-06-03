@@ -1,0 +1,111 @@
+### ✅ **Try-with-Resources in Java**
+
+**Try-with-resources** is a feature introduced in **Java 7** to automatically **close resources** like files, sockets, database connections, etc., once they are no longer needed.
+
+---
+
+## 🔧 **Syntax**
+
+```java
+try (ResourceType resource = new ResourceType()) {
+    // use resource
+} catch (Exception e) {
+    e.printStackTrace();
+}
+// resource is automatically closed here
+```
+
+To be used in this construct, the resource **must implement `AutoCloseable`** (or `Closeable`, which extends `AutoCloseable`).
+
+---
+
+## 📘 **Example**
+
+```java
+try (BufferedReader reader = new BufferedReader(new FileReader("data.txt"))) {
+    String line;
+    while ((line = reader.readLine()) != null) {
+        System.out.println(line);
+    }
+} catch (IOException e) {
+    e.printStackTrace();
+}
+// No need to call reader.close(); it's done automatically
+```
+
+---
+
+## 🧠 **Why It’s Useful (Benefits)**
+
+| Benefit                             | Description                                                                                  |
+| ----------------------------------- | -------------------------------------------------------------------------------------------- |
+| ✅ **Automatic resource cleanup**    | No need to explicitly call `close()`—even in case of exceptions.                             |
+| ✅ **Less boilerplate**              | Eliminates repetitive `finally` blocks.                                                      |
+| ✅ **Exception suppression handled** | Java manages suppressed exceptions if both resource closing and main block throw exceptions. |
+| ✅ **Improves reliability**          | Prevents resource leaks due to missed close calls.                                           |
+
+---
+
+## 🕐 **When to Use It**
+
+Use **try-with-resources** when working with:
+
+* **File I/O** (`BufferedReader`, `FileInputStream`, etc.)
+* **Database connections** (`Connection`, `Statement`, `ResultSet`)
+* **Network sockets**
+* **Custom resources** implementing `AutoCloseable`
+
+---
+
+## 🆚 Traditional try-finally vs Try-with-Resources
+
+### 👎 Traditional:
+
+```java
+BufferedReader reader = null;
+try {
+    reader = new BufferedReader(new FileReader("data.txt"));
+    // use reader
+} catch (IOException e) {
+    e.printStackTrace();
+} finally {
+    if (reader != null) {
+        try {
+            reader.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+}
+```
+
+### ✅ Try-with-Resources:
+
+```java
+try (BufferedReader reader = new BufferedReader(new FileReader("data.txt"))) {
+    // use reader
+} catch (IOException e) {
+    e.printStackTrace();
+}
+```
+
+---
+
+## 🧪 Custom Example (Custom Resource)
+
+```java
+class MyResource implements AutoCloseable {
+    public void doSomething() {
+        System.out.println("Doing something...");
+    }
+
+    @Override
+    public void close() {
+        System.out.println("Closing MyResource");
+    }
+}
+
+try (MyResource res = new MyResource()) {
+    res.doSomething();
+}
+// Automatically closes MyResource

@@ -1,0 +1,110 @@
+In Java, the **thread life cycle** represents the different states that a thread can be in during its execution. Understanding these states is crucial for writing efficient multithreaded applications.
+
+Here are the **different stages in the thread life cycle**:
+
+---
+
+### **1. New (Created)**
+
+* A thread is in the **New** state when an object of the `Thread` class (or a class that implements `Runnable`) is created but the `start()` method has not yet been called.
+
+  ```java
+  Thread t = new Thread();  // Thread is in NEW state
+  ```
+
+---
+
+### **2. Runnable**
+
+* When the `start()` method is called, the thread enters the **Runnable** state.
+* It is **ready to run** and waiting for the CPU to assign it time for execution.
+* In modern JVMs, this state includes threads that are **ready to run** but not necessarily running.
+
+  ```java
+  t.start();  // Thread is now in RUNNABLE state
+  ```
+
+---
+
+### **3. Running**
+
+* A thread is in the **Running** state when it is **actually executing** on the CPU.
+* Only one thread per CPU core can be in this state at a time.
+
+> **Note**: Java does not provide a separate `Running` state; it’s part of `Runnable`. However, conceptually, it helps to think of a thread as *Running* when it's actively executing.
+
+---
+
+### **4. Blocked**
+
+* A thread is in the **Blocked** state if it is **waiting to acquire a monitor lock** to enter a `synchronized` block or method.
+* It transitions back to `Runnable` once it acquires the lock.
+
+  Example:
+
+  ```java
+  synchronized(obj) {
+      // thread gets blocked here if another thread holds lock on obj
+  }
+  ```
+
+---
+
+### **5. Waiting**
+
+* A thread is in the **Waiting** state when it is **waiting indefinitely** for another thread to perform a particular action (e.g., calling `notify()`).
+* It can enter this state by calling:
+
+  * `Object.wait()` (without timeout)
+  * `Thread.join()` (without timeout)
+  * `LockSupport.park()`
+
+> It will stay in this state until explicitly notified or interrupted.
+
+---
+
+### **6. Timed Waiting**
+
+* A thread is in the **Timed Waiting** state when it is **waiting for a specific time** to elapse.
+* It returns to `Runnable` after the time expires or it gets notified.
+* Entered by calling:
+
+  * `Thread.sleep(milliseconds)`
+  * `Object.wait(milliseconds)`
+  * `Thread.join(milliseconds)`
+  * `LockSupport.parkNanos()`, `parkUntil()`
+
+---
+
+### **7. Terminated (Dead)**
+
+* A thread is in the **Terminated** (or **Dead**) state once it **completes execution** or is **forcibly stopped** due to an exception or `stop()` (deprecated).
+
+  ```java
+  public void run() {
+      System.out.println("Thread ends");
+  }
+  ```
+
+---
+
+### 🔄 **Summary Table**
+
+| State         | Trigger / Reason                            |
+| ------------- | ------------------------------------------- |
+| New           | Thread object created                       |
+| Runnable      | `start()` is called                         |
+| Running       | Thread scheduler picks the thread           |
+| Blocked       | Waiting for monitor lock (synchronized)     |
+| Waiting       | Waiting indefinitely (e.g., `wait()`)       |
+| Timed Waiting | Waiting for specific time (e.g., `sleep()`) |
+| Terminated    | Execution ends or uncaught exception        |
+
+---
+
+### 🧠 Tips
+
+* The **thread scheduler** is responsible for moving a thread from **Runnable** to **Running**, and it's **JVM + OS dependent**.
+* **Interrupted threads** can move from Waiting or Timed Waiting to Runnable if interrupted.
+
+Let me know if you'd like a diagram or a sample program illustrating these states.

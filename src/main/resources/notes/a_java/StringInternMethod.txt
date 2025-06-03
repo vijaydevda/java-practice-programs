@@ -1,0 +1,68 @@
+### 🔍 `String.intern()` Method in Java
+
+The `intern()` method of the `String` class is used to **optimize memory** by ensuring that **only one copy of each distinct string literal** is stored in the **string pool**.
+
+---
+
+## ✅ **Definition**
+
+```java
+public String intern()
+```
+
+* Returns a **canonical representation** of the string.
+* If the string pool already contains a string equal to the current string, it returns the reference from the pool.
+* Otherwise, it **adds** the string to the pool and returns the reference.
+
+---
+
+## 📘 **Why Use `intern()`?**
+
+* To **save memory** by avoiding duplicate string instances with the same content.
+* Useful in applications where you create many identical strings dynamically (e.g., parsers, compilers, or large XML processing apps).
+
+---
+
+## 📦 **String Pool**
+
+* A special area of **heap memory** where **string literals** are stored.
+* Automatically managed by the JVM.
+* Strings created using double quotes (`"abc"`) are **interned by default**.
+
+---
+
+## 🧪 Example
+
+```java
+String s1 = "hello";              // goes to string pool
+String s2 = new String("hello");  // heap object
+String s3 = s2.intern();          // refers to string pool object
+
+System.out.println(s1 == s2); // false (heap vs pool)
+System.out.println(s1 == s3); // true  (both refer to pool)
+```
+
+---
+
+## ⚠️ When **Not** to Use Intern
+
+* When memory pressure is low and you don’t have many duplicate strings.
+* Overusing `intern()` on dynamically generated strings **can pollute the pool**, especially in older JVMs with smaller PermGen space (Java 7 and earlier).
+* In modern JVMs (Java 8+), string intern pool is in **Metaspace**, not in PermGen, and has better memory management—but still not infinite.
+
+---
+
+## 🧠 Summary
+
+| Feature             | Description                                               |
+| ------------------- | --------------------------------------------------------- |
+| Purpose             | Deduplicate strings, save memory                          |
+| Return Value        | String from pool                                          |
+| Automatically used? | Yes, for string literals                                  |
+| Works with `==`     | Yes, after intern — because both refer to the same object |
+
+---
+
+## 🔧 Tip
+
+If you're doing a lot of dynamic string manipulation, especially with user input or parsed tokens, consider interning them **selectively** for performance/memory gain.

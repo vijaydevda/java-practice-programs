@@ -1,0 +1,136 @@
+### ✅ **Exception and Exception Handling in Java**
+
+---
+
+## 📌 What is an Exception?
+
+An **exception** is an **unusual condition or error** that occurs during the execution of a program, which **disrupts the normal flow** of instructions.
+
+In Java, all exceptions are **objects** that are instances of the class `java.lang.Throwable`.
+
+---
+
+## 🧭 Throwable Hierarchy
+
+```
+             Throwable
+             /      \
+        Error       Exception
+                      /     \
+           Checked     Unchecked (Runtime)
+```
+
+---
+
+## 📘 Types of Exceptions in Java
+
+### 1. ✅ **Checked Exceptions**
+
+* Checked at **compile-time**.
+* Must be either **caught or declared** using `throws`.
+
+#### 🔷 Examples:
+
+| Exception Class          | Meaning                         |
+| ------------------------ | ------------------------------- |
+| `IOException`            | I/O operation failure           |
+| `SQLException`           | Database access error           |
+| `ClassNotFoundException` | Class not found at runtime      |
+| `FileNotFoundException`  | File not found                  |
+| `ParseException`         | Error parsing data (e.g., date) |
+
+---
+
+### 2. ⚠️ **Unchecked Exceptions (Runtime Exceptions)**
+
+* Occur at **runtime**.
+* Not required to be handled explicitly.
+* Usually caused by programming errors.
+
+#### 🔷 Examples:
+
+| Exception Class                  | Meaning                            |
+| -------------------------------- | ---------------------------------- |
+| `NullPointerException`           | Accessing members on a null object |
+| `ArrayIndexOutOfBoundsException` | Invalid array index access         |
+| `ArithmeticException`            | Division by zero                   |
+| `ClassCastException`             | Invalid type casting               |
+| `IllegalArgumentException`       | Illegal argument passed            |
+
+---
+
+### 3. ❌ **Errors**
+
+* Serious problems that a program **should not try to handle**.
+* Often related to the **JVM itself**.
+
+#### 🔷 Examples:
+
+| Error Class            | Meaning                                               |
+| ---------------------- | ----------------------------------------------------- |
+| `OutOfMemoryError`     | JVM runs out of memory                                |
+| `StackOverflowError`   | Excessive recursion                                   |
+| `NoClassDefFoundError` | Class was present at compile time, missing at runtime |
+| `VirtualMachineError`  | Critical error in JVM                                 |
+
+---
+
+## 🛠️ Exception Handling in Java
+
+### 🔄 **Basic Syntax**
+
+```java
+try {
+    // code that may throw exception
+} catch (ExceptionType e) {
+    // handle exception
+} finally {
+    // cleanup code (optional, always executed)
+}
+```
+
+### 🔄 **Example**
+
+```java
+try {
+    int result = 10 / 0;
+} catch (ArithmeticException e) {
+    System.out.println("Cannot divide by zero.");
+} finally {
+    System.out.println("Cleanup logic, if any.");
+}
+```
+
+---
+
+## 🧰 Common Exception Handling Keywords
+
+| Keyword   | Purpose                                       |
+| --------- | --------------------------------------------- |
+| `try`     | Wraps code that might throw an exception      |
+| `catch`   | Handles the exception                         |
+| `finally` | Always executes, used for cleanup             |
+| `throw`   | Manually throws an exception                  |
+| `throws`  | Declares that a method may throw an exception |
+
+---
+
+## ✅ Best Practices
+
+* Catch **specific exceptions** before general ones.
+* Avoid **swallowing exceptions** (empty catch blocks).
+* Use `finally` for **releasing resources** (e.g., closing files/db connections).
+* For Java 7+, prefer **try-with-resources** for auto-closing resources.
+* Do not catch `Error` types — let the JVM handle them.
+
+---
+
+## 🔍 Summary Table
+
+| Type             | Class                   | Checked? | Should You Handle It? |
+| ---------------- | ----------------------- | -------- | --------------------- |
+| I/O error        | `IOException`           | Yes      | Yes                   |
+| Division by zero | `ArithmeticException`   | No       | Yes                   |
+| Null reference   | `NullPointerException`  | No       | Yes                   |
+| File not found   | `FileNotFoundException` | Yes      | Yes                   |
+| JVM crash        | `OutOfMemoryError`      | No       | No                    |

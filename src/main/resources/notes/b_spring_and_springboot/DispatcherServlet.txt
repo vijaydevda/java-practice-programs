@@ -1,0 +1,135 @@
+The **`DispatcherServlet`** is the **central component** of the Spring MVC framework — it acts as the **Front Controller** that handles **all HTTP requests** and routes them to the appropriate components in your web application (like controllers, views, etc.).
+
+---
+
+## 🚦 What is `DispatcherServlet`?
+
+`DispatcherServlet` is a **special servlet** provided by Spring, defined in:
+
+```java
+org.springframework.web.servlet.DispatcherServlet
+```
+
+It implements the **Front Controller Design Pattern**, meaning:
+
+* It **intercepts all incoming HTTP requests**,
+* Delegates control to appropriate components like **controllers, handler mappings, view resolvers**, etc.
+
+---
+
+## 🧩 Core Responsibilities
+
+| Responsibility      | Description                                           |
+| ------------------- | ----------------------------------------------------- |
+| Request handling    | Intercepts all HTTP requests (mapped via URL pattern) |
+| Request dispatching | Delegates to appropriate **`@Controller`** methods    |
+| Data binding        | Binds HTTP request data to method parameters          |
+| View resolution     | Resolves which view (HTML, JSP, JSON, etc.) to render |
+| Exception handling  | Handles exceptions via configured resolvers           |
+
+---
+
+## ⚙️ Key Components Involved in `DispatcherServlet` Flow
+
+Here’s a breakdown of components involved in a full request processing lifecycle:
+
+| Component                    | Role                                                  |
+| ---------------------------- | ----------------------------------------------------- |
+| **HandlerMapping**           | Maps request URL to the appropriate controller method |
+| **HandlerAdapter**           | Invokes the mapped handler (like a controller)        |
+| **Controller (@Controller)** | Contains the logic to handle the request              |
+| **ModelAndView**             | Holds model data and view name                        |
+| **ViewResolver**             | Resolves the logical view name to a physical view     |
+| **View**                     | Renders the output (HTML, JSON, etc.)                 |
+| **ExceptionResolver**        | Handles exceptions thrown during processing           |
+
+---
+
+## 🔁 Request Flow: Step-by-Step
+
+Let’s say a request comes to `/users/list`:
+
+1. **Client sends request** to `/users/list`.
+2. **`DispatcherServlet` receives** the request.
+3. It consults **HandlerMapping** to find the matching controller and method.
+4. **HandlerAdapter** invokes the target method (`@RequestMapping("/users/list")`).
+5. Controller executes and returns a `ModelAndView` or response body.
+6. **ViewResolver** resolves the view name (e.g., `list.jsp`).
+7. The **View** renders HTML (or JSON/XML if using `@ResponseBody`).
+8. **Response is returned** to the client.
+
+---
+
+## 🏗️ Typical Spring MVC Configuration
+
+### 🔸 XML-based (Web.xml + DispatcherServlet)
+
+```xml
+<servlet>
+    <servlet-name>spring</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>spring</servlet-name>
+    <url-pattern>/</url-pattern>
+</servlet-mapping>
+```
+
+### 🔸 Java-based (Spring Boot)
+
+In Spring Boot, this is auto-configured:
+
+* `DispatcherServlet` is automatically registered
+* URL pattern is `/` by default
+* No need to explicitly define it unless you want customization
+
+---
+
+## 🧠 Important Concepts Related to `DispatcherServlet`
+
+| Concept                              | Description                                                               |
+| ------------------------------------ | ------------------------------------------------------------------------- |
+| **Front Controller**                 | Pattern where one servlet (DispatcherServlet) handles all requests        |
+| **HandlerMapping**                   | Strategy to determine which controller handles which URL                  |
+| **ViewResolver**                     | Converts logical view name into physical resource (like JSP or Thymeleaf) |
+| **ExceptionResolver**                | Custom logic for handling exceptions in a unified way                     |
+| **Interceptors**                     | Similar to servlet filters but Spring-aware (for logging, security, etc.) |
+| **@ResponseBody** / `ResponseEntity` | For returning JSON or XML directly to the client (REST APIs)              |
+
+---
+
+## 🔍 Example Controller (Spring Boot)
+
+```java
+@RestController
+@RequestMapping("/api")
+public class UserController {
+
+    @GetMapping("/users")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
+}
+```
+
+Here, the `DispatcherServlet`:
+
+* Receives `/api/users`
+* Routes it to `UserController.getAllUsers()`
+* Serializes the response to JSON using Jackson (for `@RestController`)
+
+---
+
+## 🧾 Summary
+
+| Feature                    | Description                                           |
+| -------------------------- | ----------------------------------------------------- |
+| **What**                   | Core front controller in Spring MVC                   |
+| **Defined in**             | `org.springframework.web.servlet.DispatcherServlet`   |
+| **Default in Spring Boot** | Yes – auto-configured                                 |
+| **Responsibilities**       | Routing, binding, view rendering, exception handling  |
+| **Related Concepts**       | Controller, HandlerMapping, ViewResolver, Interceptor |
+
+---

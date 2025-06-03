@@ -1,0 +1,79 @@
+### What is a Memory Leak in Java?
+
+A **memory leak** in Java happens when **objects that are no longer needed by the application are still referenced**, preventing the Garbage Collector from reclaiming their memory. Over time, these unreachable-but-still-referenced objects accumulate, causing the application’s heap memory to fill up and potentially leading to **OutOfMemoryError** or degraded performance.
+
+---
+
+### Why Does Memory Leak Happen in Java?
+
+* Even though Java has automatic GC, **memory leaks happen due to lingering references** to objects that should be discarded.
+* Common scenarios include:
+
+  * Static collections (like `static List`, `Map`) holding onto objects indefinitely.
+  * Unclosed resources (like streams, database connections).
+  * Listeners, callbacks, or inner classes retaining references to outer objects.
+  * Poorly implemented caches that never evict entries.
+
+---
+
+### Example of Memory Leak
+
+```java
+public class MemoryLeakExample {
+    private static List<Object> cache = new ArrayList<>();
+
+    public void addToCache(Object obj) {
+        cache.add(obj);  // Objects added but never removed
+    }
+}
+```
+
+Here, objects added to the static list `cache` will never be GC’d, causing a memory leak.
+
+---
+
+### How to Prevent Memory Leaks in Java?
+
+1. **Remove Unused Object References**
+
+   * Set references to `null` if the object is no longer needed.
+   * Clear collections (`list.clear()`) when done.
+
+2. **Use Weak References / Soft References**
+
+   * Use `WeakReference` or `SoftReference` to allow GC to collect cached objects when memory is low.
+
+3. **Properly Manage Listeners and Callbacks**
+
+   * Unregister listeners when no longer needed to avoid lingering references.
+
+4. **Avoid Static Fields Holding Large Objects**
+
+   * Be cautious with static variables; they live as long as the classloader is active.
+
+5. **Close Resources Explicitly**
+
+   * Always close I/O streams, database connections, thread pools to release native resources.
+
+6. **Use Tools to Detect Leaks**
+
+   * Profilers like **VisualVM**, **YourKit**, **Eclipse MAT (Memory Analyzer Tool)** to identify leaking objects.
+
+7. **Use Caches With Eviction Policies**
+
+   * Use caches with size/time limits (like Guava Cache or Caffeine).
+
+---
+
+### Summary
+
+| Cause                                      | Prevention                                            |
+| ------------------------------------------ | ----------------------------------------------------- |
+| Lingering references in static collections | Clear collections; avoid static for big objects       |
+| Unclosed resources                         | Always close streams/connections (try-with-resources) |
+| Event listeners not removed                | Unregister listeners properly                         |
+| Caches without eviction                    | Use caches with eviction policies or weak references  |
+
+---
+
+If you want, I can share some common JVM flags or tools to track down memory leaks too!

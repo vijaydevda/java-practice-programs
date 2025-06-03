@@ -1,0 +1,100 @@
+In Java, **Heap** and **Stack** memory are two core areas of memory used by the JVM to manage application data. They serve different purposes and have distinct characteristics.
+
+---
+
+## 📚 1. **Heap Memory**
+
+### ✅ Purpose:
+
+Used to store:
+
+* Objects (instances of classes)
+* Instance variables
+* Arrays
+
+### 🔧 Characteristics:
+
+* **Shared** among all threads.
+* Managed by the **Garbage Collector (GC)**.
+* Objects live here until no longer referenced.
+* Slower access compared to stack due to GC overhead.
+
+### 🔍 Divided into:
+
+* **Young Generation**: Stores short-lived objects.
+
+  * **Eden Space** (new objects are created here)
+  * **Survivor Spaces (S0, S1)** (objects that survive GC cycles)
+* **Old (Tenured) Generation**: Stores long-lived objects.
+* **(Java 8+) Metaspace**: Class metadata (not technically part of the heap anymore)
+
+### 📌 JVM Options:
+
+```bash
+- Xms = initial heap size
+- Xmx = max heap size
+```
+
+Example:
+
+```bash
+java -Xms512m -Xmx1024m MyApp
+```
+
+---
+
+## 📚 2. **Stack Memory**
+
+### ✅ Purpose:
+
+Used to store:
+
+* Method call frames
+* Local variables
+* Function parameters
+* Return addresses
+
+### 🔧 Characteristics:
+
+* **Thread-local**: Each thread gets its own stack.
+* **LIFO** (Last In, First Out) structure.
+* Memory is **automatically reclaimed** when a method returns.
+* Faster access than heap (no GC overhead).
+
+### ❌ Stack Overflow:
+
+Occurs when:
+
+* Too many nested method calls (deep recursion)
+* Stack size is too small
+
+### 📌 JVM Option:
+
+```bash
+-Xss512k  # Set per-thread stack size
+```
+
+---
+
+## 🧠 Summary Table:
+
+| Feature               | Heap Memory                    | Stack Memory                  |
+| --------------------- | ------------------------------ | ----------------------------- |
+| Stores                | Objects, arrays, instance data | Method calls, local variables |
+| Access Speed          | Slower (GC managed)            | Faster (direct access)        |
+| Memory Management     | Garbage Collection             | Automatically reclaimed       |
+| Shared Across Threads | Yes                            | No (each thread has its own)  |
+| Error on Exhaustion   | `OutOfMemoryError`             | `StackOverflowError`          |
+| Size Control          | `-Xms`, `-Xmx`                 | `-Xss`                        |
+
+---
+
+## 🧪 Example:
+
+```java
+public class Example {
+    public static void main(String[] args) {
+        int a = 10; // stored in stack
+        Person p = new Person(); // 'p' is in stack, 'Person' object is in heap
+    }
+}

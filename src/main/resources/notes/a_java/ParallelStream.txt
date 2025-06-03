@@ -1,0 +1,121 @@
+### 🔹 What is a Parallel Stream in Java?
+
+A **parallel stream** in Java is a stream that processes elements **concurrently** using **multiple threads**, leveraging the **ForkJoinPool** (specifically the **common pool**). It divides the stream elements into **subtasks**, processes them in **parallel**, and combines the results.
+
+Introduced in **Java 8**, it helps improve performance for large data sets or CPU-intensive operations.
+
+---
+
+### ✅ Syntax: Converting a stream to parallel
+
+```java
+list.parallelStream()
+```
+
+Or from an existing stream:
+
+```java
+stream.parallel()
+```
+
+---
+
+### ✅ Example
+
+```java
+List<String> names = List.of("Alice", "Bob", "Charlie", "David", "Eva");
+
+names.parallelStream()
+     .forEach(name -> System.out.println(Thread.currentThread().getName() + " - " + name));
+```
+
+**Output (example):**
+
+```
+ForkJoinPool.commonPool-worker-1 - Alice
+ForkJoinPool.commonPool-worker-2 - Bob
+main - Charlie
+...
+```
+
+---
+
+### ⚙️ How Parallel Stream Works Internally
+
+#### 1. **ForkJoinPool.commonPool**
+
+* Parallel streams internally use `ForkJoinPool.commonPool` by default.
+* This pool uses **work-stealing**: idle threads "steal" work from busy threads.
+* The default number of threads = `Runtime.getRuntime().availableProcessors()`.
+
+#### 2. **Splitting the Data (Spliterator)**
+
+* The stream uses a **Spliterator** to recursively divide the data source into smaller chunks.
+* These chunks are then processed in **parallel** by different threads.
+
+#### 3. **Processing Tasks**
+
+* Tasks are submitted to the ForkJoinPool and executed concurrently.
+* Intermediate operations (like `map`, `filter`) are executed in parallel on each chunk.
+* Terminal operations (`collect`, `reduce`) combine results.
+
+#### 4. **Merging Results**
+
+* Results from sub-computations are **merged** using associativity (e.g., in `reduce`, `collect`).
+
+---
+
+### ⚠️ Important Notes & Considerations
+
+* **Thread safety**: Avoid shared mutable state to prevent concurrency issues.
+* **Order**: Operations like `forEach()` may not preserve order in parallel streams.
+* **Overhead**: Parallelism adds overhead. May degrade performance for small datasets or lightweight operations.
+* **Use `forEachOrdered()`** if order matters but it may affect performance.
+
+---
+
+### ✅ When to Use Parallel Stream
+
+Use parallel streams when:
+
+* You’re dealing with **large collections**.
+* The processing is **CPU-intensive**.
+* The operations are **stateless** and **independent**.
+* You don’t require strict **ordering** of results.
+
+---
+
+### ✅ When NOT to Use
+
+Avoid parallel streams if:
+
+* The task is I/O-bound (threading doesn't help much).
+* The data set is small.
+* You need fine control over thread management.
+* You're in a **containerized** environment (e.g., Spring Boot web apps) and don’t want to share the common pool.
+
+---
+
+### ✅ Example with `reduce` (safe and efficient)
+
+```java
+int sum = IntStream.rangeClosed(1, 1000)
+                   .parallel()
+                   .reduce(0, Integer::sum);
+
+System.out.println("Sum = " + sum);  // Output: Sum = 500500
+```
+
+---
+
+### 🔚 Summary
+
+| Feature         | Description                                          |
+| --------------- | ---------------------------------------------------- |
+| **Parallelism** | Uses `ForkJoinPool.commonPool` with multiple threads |
+| **Splitting**   | Uses `Spliterator` to divide workload                |
+| **Concurrency** | Processes elements in parallel                       |
+| **Use Cases**   | CPU-bound, stateless, order-independent tasks        |
+| **Caveats**     | Not ideal for small data or I/O-bound work           |
+
+---

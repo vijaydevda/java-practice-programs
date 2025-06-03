@@ -1,0 +1,110 @@
+### 🔹 What is a Stream Operator in Java?
+
+In Java, **stream operators** (also called **stream operations**) are methods you use on a **Stream** to process data. Streams allow **declarative**, **functional-style** processing of collections in a **pipeline**.
+
+Stream operations can be grouped into:
+
+1. **Intermediate Operations** (lazy)
+2. **Terminal Operations** (eager – they trigger execution)
+
+---
+
+### ✅ 1. Intermediate Stream Operators
+
+* These return a **new stream**.
+* They are **lazy** – executed only when a terminal operation is invoked.
+* Can be chained.
+
+| Operator     | Description                                                 |
+| ------------ | ----------------------------------------------------------- |
+| `map()`      | Transforms each element                                     |
+| `filter()`   | Filters elements based on a predicate                       |
+| `sorted()`   | Sorts the stream                                            |
+| `distinct()` | Removes duplicates                                          |
+| `limit()`    | Limits the number of elements                               |
+| `skip()`     | Skips first n elements                                      |
+| `peek()`     | Performs a side effect (like logging), mainly for debugging |
+
+**Example:**
+
+```java
+List<String> result = list.stream()
+    .filter(s -> s.startsWith("A"))
+    .map(String::toUpperCase)
+    .sorted()
+    .collect(Collectors.toList());
+```
+
+---
+
+### ✅ 2. Terminal Stream Operators
+
+* Trigger the execution of the stream pipeline.
+* Produce a **non-stream result** (value, collection, or side effect).
+
+| Operator                                    | Description                                    |
+| ------------------------------------------- | ---------------------------------------------- |
+| `forEach()`                                 | Applies an action for each element             |
+| `collect()`                                 | Collects the result (e.g., into a list or set) |
+| `reduce()`                                  | Reduces elements to a single value             |
+| `count()`                                   | Counts elements                                |
+| `min()` / `max()`                           | Finds min or max element                       |
+| `anyMatch()` / `allMatch()` / `noneMatch()` | Predicate-based checks                         |
+| `findFirst()` / `findAny()`                 | Gets an element (optionally)                   |
+
+**Example:**
+
+```java
+long count = list.stream()
+    .filter(s -> s.length() > 3)
+    .count();
+```
+
+---
+
+### ✅ Stream Operator Pipeline Example
+
+```java
+List<String> names = List.of("Alice", "Bob", "Alex", "Charlie");
+
+List<String> result = names.stream()
+    .filter(name -> name.startsWith("A"))   // Intermediate
+    .map(String::toUpperCase)               // Intermediate
+    .sorted()                               // Intermediate
+    .collect(Collectors.toList());          // Terminal
+```
+
+**Output:** `[ALEX, ALICE]`
+
+---
+
+### ✅ Special Case: `map()` vs `flatMap()`
+
+* `map()` transforms elements one-to-one.
+* `flatMap()` transforms elements one-to-many and **flattens** the result.
+
+```java
+Stream.of("a,b", "c,d")
+    .flatMap(s -> Arrays.stream(s.split(",")))
+    .forEach(System.out::println);
+```
+
+**Output:**
+
+```
+a
+b
+c
+d
+```
+
+---
+
+### ✅ Summary
+
+| Type         | Characteristics             | Examples                     |
+| ------------ | --------------------------- | ---------------------------- |
+| Intermediate | Lazy, returns Stream        | `map`, `filter`, `sorted`    |
+| Terminal     | Eager, triggers computation | `collect`, `count`, `reduce` |
+
+Stream operators enable writing **clean**, **efficient**, and **concise** data-processing pipelines in Java.

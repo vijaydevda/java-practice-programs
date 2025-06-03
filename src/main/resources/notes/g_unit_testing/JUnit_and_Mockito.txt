@@ -1,0 +1,88 @@
+In **unit testing with Mockito** (commonly used in Java with JUnit), `@Mock` and `@InjectMocks` are annotations that help you create mock objects and inject them into the class you're testing. Here's a detailed comparison:
+
+---
+
+### ✅ `@Mock`
+
+* **Purpose:** To create a mock instance of a class or interface.
+* **Used For:** Dependencies of the class under test.
+* **What it does:** It replaces the real object with a dummy version that you can control (e.g., define what it should return when a method is called).
+
+#### Example:
+
+```java
+@Mock
+private UserRepository userRepository;
+```
+
+This tells Mockito to create a mock implementation of `UserRepository`.
+
+---
+
+### ✅ `@InjectMocks`
+
+* **Purpose:** To create an instance of the class under test and **inject** the mocked dependencies into it.
+* **Used For:** The actual class you're testing.
+* **What it does:** It finds all `@Mock` (or `@Spy`) annotated fields and injects them into the object annotated with `@InjectMocks`.
+
+#### Example:
+
+```java
+@InjectMocks
+private UserService userService;
+```
+
+If `UserService` has a constructor or fields like:
+
+```java
+public class UserService {
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+}
+```
+
+Mockito will automatically inject the mocked `userRepository` into `userService`.
+
+---
+
+### 🔁 Example Putting Both Together
+
+```java
+@RunWith(MockitoJUnitRunner.class)
+public class UserServiceTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private UserService userService;
+
+    @Test
+    public void testGetUserById() {
+        User mockUser = new User(1L, "Alice");
+        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
+
+        User result = userService.getUserById(1L);
+
+        assertEquals("Alice", result.getName());
+    }
+}
+```
+
+---
+
+### 🆚 Summary Table
+
+| Feature         | `@Mock`                           | `@InjectMocks`                          |
+| --------------- | --------------------------------- | --------------------------------------- |
+| What it does    | Creates a mock of a class         | Creates an instance and injects mocks   |
+| Target usage    | Dependencies (collaborators)      | Class under test                        |
+| Injection type  | Not injected                      | Constructor, field, or setter injection |
+| Common use case | Simulate behavior of dependencies | Test the business logic of a class      |
+
+---
+
+Let me know if you’d like to see an example with Spring Boot & Mockito in a real-world service-test scenario.

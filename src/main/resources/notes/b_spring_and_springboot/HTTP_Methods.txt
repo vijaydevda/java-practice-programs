@@ -1,0 +1,213 @@
+Here’s a detailed explanation of all the key **HTTP methods** used in RESTful APIs, along with their purpose, characteristics, and typical usage.
+
+---
+
+## 📌 Overview of HTTP Methods
+
+| Method      | Description                      | Safe  | Idempotent | Cacheable |
+| ----------- | -------------------------------- | ----- | ---------- | --------- |
+| **GET**     | Retrieve data                    | ✅ Yes | ✅ Yes      | ✅ Yes     |
+| **POST**    | Submit data to create a resource | ❌ No  | ❌ No       | ❌ No      |
+| **PUT**     | Update/replace a resource        | ❌ No  | ✅ Yes      | ❌ No      |
+| **PATCH**   | Partially update a resource      | ❌ No  | ✅ Yes      | ❌ No      |
+| **DELETE**  | Remove a resource                | ❌ No  | ✅ Yes      | ❌ No      |
+| **OPTIONS** | Describe communication options   | ✅ Yes | ✅ Yes      | ❌ No      |
+| **HEAD**    | Like GET, but no response body   | ✅ Yes | ✅ Yes      | ✅ Yes     |
+
+---
+
+## 🔹 1. **GET**
+
+* **Purpose:** Retrieve a resource (data).
+
+* **Usage:**
+
+  ```http
+  GET /api/users/101
+  ```
+
+* **Example in Spring:**
+
+  ```java
+  @GetMapping("/users/{id}")
+  public User getUser(@PathVariable int id) { ... }
+  ```
+
+* **Properties:**
+
+  * Safe ✅ (no side effects)
+  * Idempotent ✅ (multiple identical requests return same result)
+  * Can be cached ✅
+
+---
+
+## 🔹 2. **POST**
+
+* **Purpose:** Create a new resource.
+
+* **Usage:**
+
+  ```http
+  POST /api/users
+  Content-Type: application/json
+
+  {
+    "name": "Alice",
+    "email": "alice@example.com"
+  }
+  ```
+
+* **Example in Spring:**
+
+  ```java
+  @PostMapping("/users")
+  public User createUser(@RequestBody User user) { ... }
+  ```
+
+* **Properties:**
+
+  * Not safe ❌
+  * Not idempotent ❌ (same request may create multiple entries)
+  * Not cacheable ❌
+
+---
+
+## 🔹 3. **PUT**
+
+* **Purpose:** Fully update (or create) a resource.
+
+* **Usage:**
+
+  ```http
+  PUT /api/users/101
+  Content-Type: application/json
+
+  {
+    "name": "Updated Name",
+    "email": "updated@example.com"
+  }
+  ```
+
+* **Example in Spring:**
+
+  ```java
+  @PutMapping("/users/{id}")
+  public User updateUser(@PathVariable int id, @RequestBody User user) { ... }
+  ```
+
+* **Properties:**
+
+  * Not safe ❌
+  * Idempotent ✅ (same request repeated → same result)
+  * Not cacheable ❌
+
+---
+
+## 🔹 4. **PATCH**
+
+* **Purpose:** Partially update a resource.
+
+* **Usage:**
+
+  ```http
+  PATCH /api/users/101
+  Content-Type: application/json
+
+  {
+    "email": "new@example.com"
+  }
+  ```
+
+* **Example in Spring:**
+
+  ```java
+  @PatchMapping("/users/{id}")
+  public User partiallyUpdateUser(@PathVariable int id, @RequestBody Map<String, Object> updates) { ... }
+  ```
+
+* **Properties:**
+
+  * Not safe ❌
+  * Idempotent ✅ (in most cases)
+  * Not cacheable ❌
+
+---
+
+## 🔹 5. **DELETE**
+
+* **Purpose:** Delete a resource.
+
+* **Usage:**
+
+  ```http
+  DELETE /api/users/101
+  ```
+
+* **Example in Spring:**
+
+  ```java
+  @DeleteMapping("/users/{id}")
+  public void deleteUser(@PathVariable int id) { ... }
+  ```
+
+* **Properties:**
+
+  * Not safe ❌
+  * Idempotent ✅ (deleting the same resource multiple times has same effect)
+  * Not cacheable ❌
+
+---
+
+## 🔹 6. **OPTIONS**
+
+* **Purpose:** Ask the server what HTTP methods are supported for a resource.
+
+* **Usage:**
+
+  ```http
+  OPTIONS /api/users
+  ```
+
+* **Example response:**
+
+  ```
+  Allow: GET, POST, PUT, DELETE, OPTIONS
+  ```
+
+* Often used in **CORS preflight** requests.
+
+---
+
+## 🔹 7. **HEAD**
+
+* **Purpose:** Same as `GET`, but **only headers**, no body.
+
+* **Use case:** To check if a resource exists or to get metadata (like content length).
+
+* **Usage:**
+
+  ```http
+  HEAD /api/users/101
+  ```
+
+* **Properties:**
+
+  * Safe ✅
+  * Idempotent ✅
+  * Cacheable ✅
+
+---
+
+## 🧠 Summary Table
+
+| Method  | Use Case | Safe | Idempotent | Typical Use           |
+| ------- | -------- | ---- | ---------- | --------------------- |
+| GET     | Read     | ✅    | ✅          | Fetch data            |
+| POST    | Create   | ❌    | ❌          | Add data              |
+| PUT     | Replace  | ❌    | ✅          | Full update           |
+| PATCH   | Modify   | ❌    | ✅          | Partial update        |
+| DELETE  | Remove   | ❌    | ✅          | Delete data           |
+| OPTIONS | Meta     | ✅    | ✅          | CORS, method list     |
+| HEAD    | Meta     | ✅    | ✅          | Check resource exists |
+
+---

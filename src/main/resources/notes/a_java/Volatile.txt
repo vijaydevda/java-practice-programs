@@ -1,0 +1,116 @@
+### 🔍 `volatile` Keyword in Java — Explained in Detail
+
+The `volatile` keyword in Java is used to **ensure visibility and ordering** of changes to variables **across multiple threads**.
+
+---
+
+## ✅ 1. **What Does `volatile` Do?**
+
+* **Guarantees visibility**: When a thread modifies a `volatile` variable, the new value is immediately visible to all other threads.
+* **Prevents caching**: Threads always **read the variable from main memory**, not from a CPU/core-specific **cache**.
+* **Prevents instruction reordering**: The JVM and CPU are **not allowed to reorder** reads/writes around a volatile variable.
+
+---
+
+## 📌 Syntax
+
+```java
+private volatile boolean flag;
+```
+
+---
+
+## 🔄 2. **Without `volatile`: Visibility Problem**
+
+```java
+class Worker extends Thread {
+    private boolean running = true;
+
+    public void run() {
+        while (running) {
+            // do work
+        }
+    }
+
+    public void stopRunning() {
+        running = false;
+    }
+}
+```
+
+⚠️ The `running` variable might be **cached** by the thread, so `stopRunning()` in another thread might **not stop** the loop as expected.
+
+✅ Fix:
+
+```java
+private volatile boolean running;
+```
+
+---
+
+## 📘 3. **How It Works Under the Hood**
+
+* On write: The **new value is flushed** to main memory immediately.
+* On read: The value is **read from main memory**, not from the thread's local cache.
+* In JVM, it places **memory barriers** to enforce these guarantees.
+
+---
+
+## ✅ 4. **When to Use `volatile`**
+
+| Scenario                             | Why `volatile` Helps                         |
+| ------------------------------------ | -------------------------------------------- |
+| **Flags**                            | e.g., `isRunning`, `shutdownRequested`       |
+| **Singleton double-checked locking** | Prevents reordering of object creation steps |
+| **State signaling between threads**  | Thread A sets, Thread B reacts               |
+
+---
+
+## ⚠️ 5. **Limitations of `volatile`**
+
+| Limitation               | Details                                                               |
+| ------------------------ | --------------------------------------------------------------------- |
+| Not atomic               | `volatile` does **not make operations like `count++` thread-safe**.   |
+| No locking               | Doesn’t provide mutual exclusion.                                     |
+| Not for compound actions | Don’t use it when multiple steps are involved (e.g., check-then-act). |
+
+---
+
+## 🧪 6. **Example – Correct Use**
+
+```java
+public class SharedFlag {
+    private volatile boolean stop = false;
+
+    public void runWorker() {
+        while (!stop) {
+            // do something
+        }
+    }
+
+    public void shutdown() {
+        stop = true;
+    }
+}
+```
+
+---
+
+## 🔒 7. **Volatile vs Synchronized**
+
+| Feature              | `volatile`               | `synchronized`                 |
+| -------------------- | ------------------------ | ------------------------------ |
+| Visibility guarantee | ✅ Yes                    | ✅ Yes                          |
+| Atomicity            | ❌ No                     | ✅ Yes                          |
+| Blocking             | ❌ No                     | ✅ Yes                          |
+| Use case             | Simple flags, visibility | Complex thread-safe operations |
+
+---
+
+## 🧠 Summary
+
+* `volatile` ensures **visibility**, **prevents caching**, and **disallows instruction reordering**.
+* It's ideal for **single-variable flags or state** shared between threads.
+* It’s **not suitable** for compound operations or protecting **invariants across multiple variables**—use `synchronized` or `java.util.concurrent` tools instead.
+
+---

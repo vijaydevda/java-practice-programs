@@ -1,0 +1,96 @@
+In Java, `CompletableFuture` is a class introduced in **Java 8** under the `java.util.concurrent` package. It represents a **future result** of an **asynchronous computation** and provides powerful tools to **compose, combine, and handle** asynchronous operations in a more functional and declarative way.
+
+---
+
+### ✅ Key Points about `CompletableFuture`
+
+* It's an enhancement of the `Future` interface.
+* Allows **non-blocking**, **asynchronous** programming.
+* Supports **callbacks** when computation completes.
+* Enables **chaining** multiple asynchronous tasks.
+
+---
+
+### ✅ Basic Example
+
+```java
+CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+    // Simulate some long-running task
+    return "Hello";
+});
+
+future.thenAccept(result -> {
+    System.out.println("Result: " + result);
+});
+```
+
+**Output:**
+
+```
+Result: Hello
+```
+
+---
+
+### ✅ Important Methods in `CompletableFuture`
+
+| Method                     | Description                                    |
+| -------------------------- | ---------------------------------------------- |
+| `supplyAsync(Supplier<T>)` | Runs task asynchronously and returns result    |
+| `runAsync(Runnable)`       | Runs a task that doesn't return a result       |
+| `thenApply(Function)`      | Transforms the result                          |
+| `thenAccept(Consumer)`     | Consumes the result                            |
+| `thenRun(Runnable)`        | Runs another task after completion (no result) |
+| `thenCombine(f1, f2)`      | Combines two futures                           |
+| `exceptionally(Function)`  | Handles exceptions                             |
+| `whenComplete(BiConsumer)` | Runs after completion (success or failure)     |
+
+---
+
+### ✅ Chaining Example
+
+```java
+CompletableFuture<String> future = CompletableFuture
+    .supplyAsync(() -> "Hello")
+    .thenApply(result -> result + " World")
+    .thenApply(String::toUpperCase);
+
+System.out.println(future.join()); // Output: HELLO WORLD
+```
+
+---
+
+### ✅ Exception Handling
+
+```java
+CompletableFuture<String> future = CompletableFuture
+    .supplyAsync(() -> {
+        if (true) throw new RuntimeException("Oops!");
+        return "Success";
+    })
+    .exceptionally(ex -> "Fallback result");
+
+System.out.println(future.join()); // Output: Fallback result
+```
+
+---
+
+### ✅ Real-world Use Cases
+
+* Calling REST APIs asynchronously
+* Performing parallel database calls
+* Handling I/O operations without blocking threads
+* Building pipelines for complex async workflows
+
+---
+
+### ✅ Summary
+
+`CompletableFuture` is a powerful tool for writing **asynchronous**, **non-blocking** Java code in a **declarative** and **composable** manner. It significantly improves over traditional `Future` by enabling:
+
+* **Chaining** of tasks
+* **Combining** multiple async results
+* **Handling exceptions gracefully**
+* **Parallel processing** with minimal thread blocking
+
+Let me know if you'd like to see how it integrates with Spring Boot or in microservices.

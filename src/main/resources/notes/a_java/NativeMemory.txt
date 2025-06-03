@@ -1,0 +1,30 @@
+**Native memory** refers to memory allocated **outside** the Java heap, directly managed by the **operating system**, rather than the JVM (Java Virtual Machine). Unlike heap memory, which stores Java objects and is controlled by the garbage collector, native memory is used for system-level operations.
+
+### **How Native Memory Is Used in Java**
+1. **Metaspace (Java 8+):**
+   - Stores **class metadata**, replacing PermGen.
+   - Avoids Java heap constraints, dynamically expanding as needed.
+
+2. **Direct Buffers:**
+   - Used for high-performance **I/O operations** (e.g., NIO `ByteBuffer`).
+   - Helps bypass Java heap for faster data transfer.
+
+3. **JNI (Java Native Interface):**
+   - Allows Java to call native code (C/C++).
+   - Uses native memory for interoperability with external libraries.
+
+4. **Thread Stacks:**
+   - Each Java thread gets a native **stack** for method execution.
+   - Includes method call frames, local variables, and return addresses.
+
+### **Key Difference: Heap vs. Native Memory**
+| **Aspect** | **Java Heap** | **Native Memory** |
+|------------|-------------|----------------|
+| **Managed By** | JVM (Garbage Collector) | OS (Memory Allocator) |
+| **Used For** | Java objects (Strings, Arrays, etc.) | Class metadata, native libraries, direct buffers |
+| **Resizing** | Limited by JVM settings | More flexible, often dynamically allocated |
+| **Performance** | Affected by GC cycles | Faster access, avoids GC overhead |
+
+For Java performance optimization, **understanding native memory usage is crucial**, especially if you're working with **high-scale applications or JNI-based integrations**. Since you're refining your **Java expertise**, diving into native memory concepts can be a great way to expand your knowledge!
+
+Would you like insights into **native memory leaks and debugging techniques**? 🚀

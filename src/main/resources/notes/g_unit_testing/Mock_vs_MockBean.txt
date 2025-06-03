@@ -1,0 +1,100 @@
+Great! Let's look at the difference between **`@Mock` (from Mockito)** and **`@MockBean` (from Spring Boot Test)** — especially in the context of Spring Boot testing.
+
+---
+
+## ✅ `@Mock` vs `@MockBean` — Overview
+
+| Feature              | `@Mock` (Mockito)                         | `@MockBean` (Spring Boot Test)                   |
+| -------------------- | ----------------------------------------- | ------------------------------------------------ |
+| Provided by          | `org.mockito`                             | `org.springframework.boot.test.mock.mockito`     |
+| Used in              | Unit tests (pure JUnit/Mockito)           | Integration or slice tests (with Spring context) |
+| Spring Context aware | ❌ No                                      | ✅ Yes                                            |
+| Where injected       | Into fields annotated with `@InjectMocks` | Into Spring's `ApplicationContext`               |
+| Use case             | Isolated unit testing                     | Replace real Spring beans in tests               |
+
+---
+
+## 🎯 1. `@Mock` Example (Pure Unit Test)
+
+Used when you're **not loading the Spring context**. You test a class **in isolation**.
+
+```java
+@RunWith(MockitoJUnitRunner.class)
+public class UserServiceTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private UserService userService;
+
+    @Test
+    public void testGetUserById() {
+        User user = new User(1L, "Alice");
+        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        User result = userService.getUserById(1L);
+
+        assertEquals("Alice", result.getName());
+    }
+}
+```
+
+🧠 Here:
+
+* The test doesn't start Spring Boot.
+* Dependencies are manually injected using `@InjectMocks`.
+
+---
+
+## 🌱 2. `@MockBean` Example (Spring Boot Test)
+
+Used when you **want to test with Spring context**, but replace a real bean with a mock.
+
+```java
+@SpringBootTest
+public class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private UserService userService; // Replaces actual bean in Spring context
+
+    @Test
+    public void testGetUser() throws Exception {
+        User user = new User(1L, "Alice");
+        Mockito.when(userService.getUserById(1L)).thenReturn(user);
+
+        mockMvc.perform(get("/users/1"))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.name").value("Alice"));
+    }
+}
+```
+
+🧠 Here:
+
+* Spring Boot starts the context.
+* `UserService` is a Spring `@Service`, but we **mock it inside the application context**.
+* Useful for **controller tests**, **@WebMvcTest**, etc.
+
+---
+
+## 🔄 Summary: When to Use What?
+
+| Scenario                                     | Use                      | Why                                            |
+| -------------------------------------------- | ------------------------ | ---------------------------------------------- |
+| Testing a service layer class in isolation   | `@Mock` + `@InjectMocks` | Fast, simple unit testing                      |
+| Testing controller with real Spring context  | `@MockBean`              | Replace a bean in the Spring context           |
+| Want to avoid loading the full context       | `@Mock`                  | Faster, no Spring dependencies needed          |
+| Testing with `@WebMvcTest` or `@DataJpaTest` | `@MockBean`              | Spring only loads specific layers, needs mocks |
+
+---
+
+## ✅ Final Tip
+
+* Use `@Mock` in **unit tests**.
+* Use `@MockBean` in **Spring Boot tests** that require Spring context (like controller tests).
+
+Would you like an end-to-end example combining `@WebMvcTest` with `@MockBean` and controller/service layers?

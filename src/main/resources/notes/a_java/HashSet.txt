@@ -1,0 +1,98 @@
+### 🔍 Internal Working of `HashSet` in Java
+
+The `HashSet` class in Java is part of the **Java Collections Framework** and is used to store **unique elements only**, i.e., **no duplicates**. Internally, `HashSet` uses a **`HashMap`** for storing its elements.
+
+---
+
+### ⚙️ How `HashSet` Works Internally
+
+Here's a step-by-step explanation of what happens when you add an element to a `HashSet`:
+
+1. #### `HashSet` is backed by a `HashMap`
+
+   Internally, it uses:
+
+   ```java
+   private transient HashMap<E, Object> map;
+   ```
+
+   * A dummy value (`PRESENT`) is used as the value in the map.
+
+   ```java
+   private static final Object PRESENT = new Object();
+   ```
+
+2. #### When you call `add(element)`
+
+   ```java
+   hashSet.add("A");
+   ```
+
+   Internally calls:
+
+   ```java
+   map.put("A", PRESENT);
+   ```
+
+3. #### `HashMap.put()` Working
+
+   Inside `put()`:
+
+   * Computes the **hash code** of the key using `hashCode()`.
+   * Applies **hash function** to find the **bucket index**.
+   * If no entry is present at that index, a new `Node` is created and added.
+   * If an entry **already exists**, it checks for equality using `equals()`.
+
+     * If `equals()` returns `true`, the new key is **not added** (ensures uniqueness).
+     * If `false`, handles **hash collision** (via linked list or red-black tree for high collision).
+
+---
+
+### 📦 Example
+
+```java
+HashSet<String> set = new HashSet<>();
+set.add("Apple");
+set.add("Banana");
+set.add("Apple"); // Duplicate, won't be added
+```
+
+Internally:
+
+```java
+map.put("Apple", PRESENT);
+map.put("Banana", PRESENT);
+map.put("Apple", PRESENT); // Ignored due to existing key
+```
+
+---
+
+### ⚠️ Important Notes
+
+* **null** is allowed (only once).
+* Order is **not maintained** (use `LinkedHashSet` to preserve insertion order).
+* It relies on correct implementation of:
+
+  * `hashCode()`
+  * `equals()`
+
+---
+
+### 📈 Performance
+
+| Operation    | Time Complexity |
+| ------------ | --------------- |
+| `add()`      | O(1) average    |
+| `contains()` | O(1) average    |
+| `remove()`   | O(1) average    |
+
+(Degrades to O(n) in worst case if many hash collisions happen.)
+
+---
+
+### ✅ Summary
+
+* `HashSet` = `HashMap` with keys only, values are dummy (`PRESENT` object).
+* Ensures uniqueness using `hashCode()` and `equals()`.
+* Fast performance due to hashing.
+* No guarantees on order.

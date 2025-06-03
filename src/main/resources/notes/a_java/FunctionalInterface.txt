@@ -1,0 +1,66 @@
+In Java, a **functional interface** is an interface that contains **exactly one abstract method**. These interfaces are used primarily to represent **lambda expressions** or **method references** in Java's **functional programming** style introduced in **Java 8**.
+
+---
+
+### ✅ Key Features of Functional Interfaces
+
+* **Single Abstract Method (SAM)**: It should have only one abstract method.
+* **Can have default and static methods**: But only one abstract method is allowed.
+* **Annotated with `@FunctionalInterface`** *(optional but recommended)*: It’s a compile-time check to ensure the interface meets the functional interface criteria.
+
+---
+
+### ✅ Example of a Functional Interface
+
+```java
+@FunctionalInterface
+public interface MyFunction {
+    void execute();
+}
+```
+
+You can use this interface with a lambda expression:
+
+```java
+MyFunction f = () -> System.out.println("Hello from lambda!");
+f.execute(); // Output: Hello from lambda!
+```
+
+---
+
+### ✅ Built-in Functional Interfaces in `java.util.function` package
+
+| Interface       | Abstract Method     | Description              |
+| --------------- | ------------------- | ------------------------ |
+| `Function<T,R>` | `R apply(T t)`      | Takes T, returns R       |
+| `Predicate<T>`  | `boolean test(T t)` | Takes T, returns boolean |
+| `Consumer<T>`   | `void accept(T t)`  | Takes T, returns nothing |
+| `Supplier<T>`   | `T get()`           | Takes nothing, returns T |
+
+---
+
+### ✅ Example with Built-in Functional Interface
+
+```java
+Function<Integer, Integer> square = x -> x * x;
+System.out.println(square.apply(5)); // Output: 25
+```
+
+---
+
+### ✅ Why Use Functional Interfaces?
+
+* Enable concise and readable code via **lambda expressions**
+* Used heavily in **Streams API** and **functional programming**
+* Promote **behavior parameterization** (passing code as data)
+
+---
+
+### ✅ Summary
+
+A **functional interface** in Java:
+
+* Has one abstract method
+* Can be implemented using a **lambda expression** or **method reference**
+* Powers many modern Java features (streams, event handling, etc.)
+* Can use `@FunctionalInterface` to enforce correctness

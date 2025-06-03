@@ -1,0 +1,119 @@
+Writing unit tests to **cover `catch` blocks** is important for ensuring your code behaves correctly when **exceptions occur**. Here's how to approach it.
+
+---
+
+## ✅ Goal
+
+You want to **simulate an exception** in a dependency, so your code enters the `catch` block, and then **assert what happens inside it** (e.g., logging, default values, custom exceptions, etc.).
+
+---
+
+## 🔧 Strategy
+
+1. **Mock a method to throw an exception**
+2. **Call the method under test**
+3. **Assert the behavior inside the `catch` block** (e.g., log captured, fallback value returned, exception rethrown, etc.)
+
+---
+
+## 🎯 Example
+
+Let’s say you have the following service:
+
+```java
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    public User getUserById(Long id) {
+        try {
+            return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        } catch (Exception e) {
+            // Catch block logic
+            System.err.println("Exception occurred: " + e.getMessage());
+            return null; // or throw new CustomException(...)
+        }
+    }
+}
+```
+
+---
+
+## 🧪 Unit Test to Cover `catch` Block
+
+```java
+@RunWith(MockitoJUnitRunner.class)
+public class UserServiceTest {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private UserService userService;
+
+    @Test
+    public void testGetUserById_exceptionCaught_returnsNull() {
+        // Arrange: simulate an exception
+        Mockito.when(userRepository.findById(1L)).thenThrow(new RuntimeException("DB failure"));
+
+        // Act: call method that should enter catch block
+        User result = userService.getUserById(1L);
+
+        // Assert: validate catch block behavior
+        assertNull(result);  // You could also verify log or error response
+    }
+}
+```
+
+---
+
+## 🧠 Things You Can Assert Inside Catch Block
+
+Depending on your actual logic inside the `catch`, you might:
+
+* ✅ Assert returned value (`null`, default, fallback, etc.)
+* ✅ Assert a custom exception is thrown
+* ✅ Use a logger and verify that log was called (with LogCaptor or a mocking library)
+* ✅ Ensure program doesn’t crash (graceful failure)
+
+---
+
+## 💡 Extra Tip (for exception assertions)
+
+If your catch block **rethrows a custom exception**, test like this:
+
+```java
+@Test
+public void testGetUserById_exceptionThrown_rethrowsCustomException() {
+    Mockito.when(userRepository.findById(1L))
+           .thenThrow(new RuntimeException("DB down"));
+
+    assertThrows(CustomServiceException.class, () -> {
+        userService.getUserById(1L);
+    });
+}
+```
+
+---
+
+## 🧪 Tools to Help You Test Catch Blocks
+
+* **Mockito `thenThrow(...)`**
+* **JUnit `assertThrows(...)`**
+* **AssertJ or Hamcrest** for expressive assertions
+* **LogCaptor** (optional) to test logging behavior inside `catch`
+
+---
+
+## ✅ Summary
+
+| Goal                     | How to Achieve                               |
+| ------------------------ | -------------------------------------------- |
+| Enter catch block        | Mock dependency to throw exception           |
+| Return fallback or null  | Assert return value is correct               |
+| Rethrow custom exception | Use `assertThrows()`                         |
+| Verify logging           | Use a logger-capturing tool like `LogCaptor` |
+
+Let me know if you’d like a Spring Boot–based version of this with real controller or service examples.

@@ -1,0 +1,44 @@
+The `join()` method in Java **multi-threading** allows one thread to **wait** for another thread to complete before proceeding. It's commonly used when you need a **sequential execution flow** in a multi-threaded environment.
+
+### **How `join()` Works**
+- When `thread.join()` is called, the **calling thread pauses** until the `thread` it joins **finishes execution**.
+- If multiple threads call `join()`, the **main thread waits** for all joined threads to complete before moving forward.
+- **Overloaded versions** of `join(long millis)` allow waiting for a specific amount of time instead of indefinitely.
+
+### **Example Usage**
+```java
+class MyThread extends Thread {
+    public void run() {
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(Thread.currentThread().getName() + " - " + i);
+            try { Thread.sleep(500); } catch (InterruptedException e) { e.printStackTrace(); }
+        }
+    }
+}
+
+public class JoinExample {
+    public static void main(String[] args) {
+        Thread t1 = new MyThread();
+        Thread t2 = new MyThread();
+
+        t1.start();
+        try { t1.join(); } catch (InterruptedException e) { e.printStackTrace(); }
+
+        t2.start();
+        try { t2.join(); } catch (InterruptedException e) { e.printStackTrace(); }
+
+        System.out.println("All threads completed execution.");
+    }
+}
+```
+
+### **Key Points**
+- **Without `join()`**, `t1` and `t2` may run **concurrently**, leading to unpredictable output.
+- **With `join()`**, the main thread waits for **t1 to complete before starting t2**.
+- **Calling `join()` on multiple threads** ensures they finish before the main thread continues.
+
+### **Overloaded Versions**
+- `join(long millis)` → Waits for `millis` milliseconds, then proceeds even if the thread hasn’t finished.
+- `join(long millis, int nanos)` → Waits for a precise time period.
+
+Would you like an example of using `join(long millis)`? 🚀

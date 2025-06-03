@@ -1,0 +1,120 @@
+### 🔹 What is `ForkJoinPool` in Java?
+
+`ForkJoinPool` is a **specialized thread pool** introduced in **Java 7** (in `java.util.concurrent`) designed to **efficiently execute tasks that can be broken into smaller subtasks** — following the **divide-and-conquer** paradigm.
+
+It powers features like:
+
+* **Parallel Streams**
+* **`CompletableFuture`**
+* **RecursiveTask** and **RecursiveAction**
+
+---
+
+### ✅ Core Idea
+
+It uses a technique called **work stealing**:
+
+* Idle threads **"steal" tasks** from busy threads' queues.
+* This improves **CPU utilization** and reduces idle time.
+
+---
+
+### ✅ Key Components
+
+| Component            | Description                                                                              |
+| -------------------- | ---------------------------------------------------------------------------------------- |
+| **Work Stealing**    | Each worker thread has its own queue. If it's idle, it tries to steal tasks from others. |
+| **RecursiveTask<T>** | For tasks that return a result                                                           |
+| **RecursiveAction**  | For tasks that don't return a result                                                     |
+| **Common Pool**      | A shared ForkJoinPool used by parallel streams and `CompletableFuture` by default        |
+
+---
+
+### ✅ Basic Example: RecursiveTask
+
+```java
+import java.util.concurrent.*;
+
+class SumTask extends RecursiveTask<Integer> {
+    int[] arr;
+    int start, end;
+
+    SumTask(int[] arr, int start, int end) {
+        this.arr = arr;
+        this.start = start;
+        this.end = end;
+    }
+
+    @Override
+    protected Integer compute() {
+        if (end - start <= 2) {
+            int sum = 0;
+            for (int i = start; i < end; i++) sum += arr[i];
+            return sum;
+        }
+
+        int mid = (start + end) / 2;
+        SumTask left = new SumTask(arr, start, mid);
+        SumTask right = new SumTask(arr, mid, end);
+
+        left.fork(); // run asynchronously
+        int rightResult = right.compute(); // compute right in current thread
+        int leftResult = left.join(); // wait for left to finish
+
+        return leftResult + rightResult;
+    }
+}
+
+public class Demo {
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3, 4, 5, 6};
+        ForkJoinPool pool = new ForkJoinPool();
+        SumTask task = new SumTask(arr, 0, arr.length);
+        int result = pool.invoke(task);
+        System.out.println("Sum = " + result); // Output: Sum = 21
+    }
+}
+```
+
+---
+
+### ✅ ForkJoinPool vs ThreadPoolExecutor
+
+| Feature       | ForkJoinPool                          | ThreadPoolExecutor         |
+| ------------- | ------------------------------------- | -------------------------- |
+| Task Type     | Recursive, fork/join                  | Independent, long-running  |
+| Work Stealing | Yes                                   | No                         |
+| Efficiency    | Higher for fine-grained parallelism   | Good for traditional tasks |
+| Used in       | `parallelStream`, `CompletableFuture` | Web servers, executors     |
+
+---
+
+### ✅ Common Pool
+
+You can access the shared pool like this:
+
+```java
+ForkJoinPool commonPool = ForkJoinPool.commonPool();
+```
+
+Default size: `Runtime.getRuntime().availableProcessors()`
+
+You can also **create custom pools** if you want isolated resources.
+
+---
+
+### ⚠️ Caution in Web Apps / Spring Boot
+
+* Since `parallelStream()` and `CompletableFuture` use the **common pool**, uncontrolled usage can lead to **thread starvation**.
+* For production-grade apps, especially in **web environments**, consider using **custom thread pools** to avoid contention.
+
+---
+
+### ✅ Summary
+
+* `ForkJoinPool` efficiently handles **recursive, parallelizable tasks**.
+* Based on **divide-and-conquer** and **work-stealing**.
+* Powers **parallel streams** and **async APIs** like `CompletableFuture`.
+* Best suited for **CPU-intensive**, **short-lived**, and **splittable** tasks.
+
+Let me know if you want to see how to configure a custom `ForkJoinPool` in a Spring Boot application.

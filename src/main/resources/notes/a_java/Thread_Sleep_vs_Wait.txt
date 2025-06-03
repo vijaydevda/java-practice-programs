@@ -1,0 +1,76 @@
+Great question! In Java multithreading, **`waiting`** and **`sleeping`** states *seem similar* at first glance since in both cases the thread is **not actively executing**, but **they are different in purpose, mechanism, and behavior**.
+
+Here's a detailed comparison:
+
+---
+
+### 🔹 1. **Definition & Purpose**
+
+| Aspect      | `sleeping`                                     | `waiting`                                                               |
+| ----------- | ---------------------------------------------- | ----------------------------------------------------------------------- |
+| What is it? | A thread is **put to sleep** for a fixed time. | A thread is **waiting indefinitely** for another thread to signal it.   |
+| Purpose     | Used to pause execution for a set duration.    | Used for thread coordination or communication (e.g. producer-consumer). |
+
+---
+
+### 🔹 2. **How it is triggered**
+
+| Aspect       | `sleeping`                   | `waiting`                                       |
+| ------------ | ---------------------------- | ----------------------------------------------- |
+| Triggered by | `Thread.sleep(milliseconds)` | `Object.wait()` (requires a synchronized block) |
+
+---
+
+### 🔹 3. **Duration**
+
+| Aspect      | `sleeping`                                      | `waiting`                                                    |
+| ----------- | ----------------------------------------------- | ------------------------------------------------------------ |
+| Fixed Time? | Yes – the thread sleeps for the specified time. | No – it waits indefinitely (unless `wait(timeout)` is used). |
+
+---
+
+### 🔹 4. **Wake-up Mechanism**
+
+| Aspect  | `sleeping`                              | `waiting`                                                                |
+| ------- | --------------------------------------- | ------------------------------------------------------------------------ |
+| Wake-up | Automatically after the sleep duration. | Must be **notified** by another thread using `notify()` / `notifyAll()`. |
+
+---
+
+### 🔹 5. **Synchronization Lock**
+
+| Aspect     | `sleeping`                             | `waiting`                                                       |
+| ---------- | -------------------------------------- | --------------------------------------------------------------- |
+| Lock held? | The thread retains any locks it holds. | The thread **releases the lock** on the object it's waiting on. |
+
+---
+
+### 🔹 6. **Interruptibility**
+
+| Aspect                | `sleeping`                              | `waiting`                                |
+| --------------------- | --------------------------------------- | ---------------------------------------- |
+| InterruptedException? | Yes, if `Thread.interrupt()` is called. | Yes, also throws `InterruptedException`. |
+
+---
+
+### ✅ Summary
+
+| Feature          | `sleep()`                     | `wait()`                            |
+| ---------------- | ----------------------------- | ----------------------------------- |
+| Belongs to       | `Thread` class                | `Object` class                      |
+| Lock requirement | No                            | Yes (must own the object's monitor) |
+| Lock behavior    | Does **not** release the lock | **Releases** the lock               |
+| Wake-up type     | Auto after timeout            | Needs `notify()` / `notifyAll()`    |
+| Use case         | Pause execution               | Thread coordination                 |
+
+---
+
+### 🧠 So are they technically the same?
+
+**No** – while both **pause execution**, they:
+
+* Serve **different purposes** (timing vs synchronization),
+* Behave differently with **locks**,
+* Require different **handling mechanisms**.
+
+Let me know if you'd like a code example demonstrating both!

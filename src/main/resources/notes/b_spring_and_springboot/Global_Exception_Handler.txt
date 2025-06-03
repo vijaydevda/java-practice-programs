@@ -1,0 +1,114 @@
+A **Global Exception Handler** in Spring is a mechanism that allows you to **handle exceptions across the whole application** — not just in a single controller — using the `@ControllerAdvice` annotation.
+
+---
+
+## ⚠️ What Is a Global Exception Handler?
+
+* It is a **centralized class** that handles exceptions thrown from any controller in the application.
+* Instead of duplicating `try-catch` logic in every controller, Spring lets you define **global logic for handling errors**.
+
+---
+
+## 🧩 Key Annotations
+
+| Annotation              | Description                                                                   |
+| ----------------------- | ----------------------------------------------------------------------------- |
+| `@ControllerAdvice`     | Declares a global exception handler class                                     |
+| `@ExceptionHandler`     | Marks a method to handle specific exception(s)                                |
+| `@ResponseStatus`       | Sets the HTTP status code to return                                           |
+| `@ResponseBody`         | Returns the object directly as JSON/XML (optional in `@RestControllerAdvice`) |
+| `@RestControllerAdvice` | Combines `@ControllerAdvice` + `@ResponseBody` (suitable for REST APIs)       |
+
+---
+
+## ✅ Example 1: Basic Global Exception Handler
+
+```java
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public Map<String, String> handleNotFound(ResourceNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Resource not found");
+        error.put("message", ex.getMessage());
+        return error;
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public Map<String, String> handleGeneric(Exception ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Internal Server Error");
+        error.put("message", ex.getMessage());
+        return error;
+    }
+}
+```
+
+---
+
+## ✅ Example 2: For REST APIs – `@RestControllerAdvice`
+
+```java
+@RestControllerAdvice
+public class ApiExceptionHandler {
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleBadRequest(IllegalArgumentException ex) {
+        return Map.of("error", "Bad Request", "message", ex.getMessage());
+    }
+}
+```
+
+---
+
+## 🛠️ How to Configure?
+
+**No explicit configuration needed in Spring Boot**. Just:
+
+1. Annotate your handler class with `@ControllerAdvice` or `@RestControllerAdvice`.
+2. Define methods with `@ExceptionHandler(ExceptionType.class)`.
+
+Spring auto-detects these classes during component scanning (`@Component` behavior).
+
+---
+
+## 🧠 Advanced Features
+
+| Feature                         | Description                                              |
+| ------------------------------- | -------------------------------------------------------- |
+| Handle multiple exception types | `@ExceptionHandler({Ex1.class, Ex2.class})`              |
+| Access request context          | Inject `HttpServletRequest`, `HttpServletResponse`, etc. |
+| Return custom response object   | Return a custom `ErrorResponse` DTO                      |
+| Use `ResponseEntity`            | Return status, headers, and body flexibly                |
+
+### Example using `ResponseEntity`
+
+```java
+@ExceptionHandler(DataIntegrityViolationException.class)
+public ResponseEntity<ErrorResponse> handleDataError(DataIntegrityViolationException ex) {
+    ErrorResponse error = new ErrorResponse("Database Error", ex.getMessage());
+    return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+}
+```
+
+---
+
+## 🧾 Summary
+
+| Concept                     | Description                                                    |
+| --------------------------- | -------------------------------------------------------------- |
+| **Global Handler**          | Centralized way to manage exceptions                           |
+| **`@ControllerAdvice`**     | Applies globally to all controllers                            |
+| **`@ExceptionHandler`**     | Specifies which exception to handle                            |
+| **`@ResponseStatus`**       | Defines HTTP status for the response                           |
+| **`@RestControllerAdvice`** | For REST APIs — combines `@ControllerAdvice` + `@ResponseBody` |
+
+---
+
+Let me know if you'd like a sample Spring Boot project setup with global exception handling and custom error responses.

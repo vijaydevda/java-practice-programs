@@ -1,0 +1,114 @@
+### 🔍 Atomic Variables in Java
+
+**Atomic variables** in Java are part of the `java.util.concurrent.atomic` package and provide
+a way to perform **thread-safe, lock-free** operations on **single variables**.
+
+They are designed to solve the **atomicity problem** (e.g., `count++`) in multithreaded programs
+ **without using synchronization**.
+
+---
+
+## ✅ Why Use Atomic Variables?
+
+Normal operations like:
+
+```java
+count++;
+```
+
+are **not atomic** — it’s a compound operation:
+
+1. Read `count`
+2. Increment
+3. Write back
+
+⚠️ In multithreaded environments, this can lead to **race conditions**.
+
+✅ Atomic variables solve this using **low-level CPU instructions** (like **CAS**: Compare-And-Swap)
+to make updates **atomic and thread-safe**, without locks.
+
+---
+
+## 🧰 Common Atomic Classes
+
+| Class                       | Type                    |
+| --------------------------- | ----------------------- |
+| `AtomicInteger`             | int                     |
+| `AtomicLong`                | long                    |
+| `AtomicBoolean`             | boolean                 |
+| `AtomicReference<T>`        | reference to any object |
+| `AtomicIntegerArray`        | array of ints           |
+| `AtomicStampedReference<T>` | for versioned updates   |
+
+---
+
+## 🔄 Example: `AtomicInteger`
+
+```java
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class Counter {
+    private AtomicInteger count = new AtomicInteger(0);
+
+    public void increment() {
+        count.incrementAndGet();  // atomic +1
+    }
+
+    public int getCount() {
+        return count.get();
+    }
+}
+```
+
+---
+
+## 🔍 Key Methods of `AtomicInteger`
+
+| Method                            | Description                               |
+| --------------------------------- | ----------------------------------------- |
+| `get()`                           | Returns the current value                 |
+| `set(int newValue)`               | Sets to the new value                     |
+| `incrementAndGet()`               | Atomically increments and returns         |
+| `decrementAndGet()`               | Atomically decrements and returns         |
+| `addAndGet(int delta)`            | Adds delta atomically                     |
+| `compareAndSet(expected, update)` | Atomically sets if expected value matches |
+
+---
+
+## ⚙️ Behind the Scenes: Compare-And-Swap (CAS)
+
+Atomic variables use **CAS operations** supported by the CPU:
+
+* Compares current value with expected
+* If equal → updates the value
+* If not equal → retry or exit
+
+CAS avoids **locking** and is much faster in low-contention scenarios.
+
+---
+
+## 📌 Use Cases
+
+* Thread-safe counters
+* Non-blocking algorithms
+* Implementing lock-free data structures
+* Managing shared flags or references in concurrent apps
+
+---
+
+## ✅ Atomic vs `synchronized`
+
+| Feature      | `Atomic`                    | `synchronized`               |
+| ------------ | --------------------------- | ---------------------------- |
+| Lock-free    | ✅ Yes                       | ❌ No                         |
+| Performance  | ✅ Better (low contention)   | ❌ Slower (blocking involved) |
+| Granularity  | Single variable             | Arbitrary code blocks        |
+| Suitable for | Counters, flags, references | Complex logic, invariants    |
+
+---
+
+## 🧠 Summary
+
+* **Atomic variables** offer **lock-free, thread-safe operations** on single variables.
+* Use when you need **fast and simple synchronization** for basic operations like `count++`, `flag = true`, etc.
+* Don’t use atomic variables for **complex logic involving multiple variables** — use `synchronized` or higher-level concurrency utilities (`ReentrantLock`, etc).

@@ -1,0 +1,104 @@
+### ✅ What is an Immutable Class in Java?
+
+An **immutable class** is a class whose **objects (instances) cannot be modified** after they are created.
+
+In other words:
+
+* Once an object is created, its **state (fields)** cannot be changed.
+* Any modification results in a **new object**, not a change to the existing one.
+
+---
+
+## 📌 Common Examples
+
+* `String`
+* Wrapper classes like `Integer`, `Double`, `Boolean`
+* `LocalDate`, `LocalTime`, `BigDecimal`, etc.
+
+---
+
+## ✅ Benefits of Immutability
+
+| Benefit                        | Explanation                                                   |
+| ------------------------------ | ------------------------------------------------------------- |
+| Thread-safe                    | No need for synchronization — read-only state.                |
+| Caching and performance        | Can safely cache and reuse instances (like string interning). |
+| Safe as keys in maps/sets      | Hashcode doesn't change — avoids bugs.                        |
+| Easy to reason about and debug | Objects don’t change unexpectedly.                            |
+
+---
+
+## 🛠️ How to Create an Immutable Class in Java
+
+To make a class immutable, follow these steps:
+
+```java
+public final class Person {
+    private final String name;
+    private final int age;
+    private final List<String> hobbies; // mutable object
+
+    public Person(String name, int age, List<String> hobbies) {
+        this.name = name;
+        this.age = age;
+        // Defensive copy to prevent external mutation
+        this.hobbies = new ArrayList<>(hobbies);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public List<String> getHobbies() {
+        return new ArrayList<>(hobbies); // Return copy to avoid exposure
+    }
+}
+```
+
+---
+
+## 🔒 Key Rules to Enforce Immutability
+
+| Rule                                | Explanation                                         |
+| ----------------------------------- | --------------------------------------------------- |
+| `class` must be `final`             | Prevent subclassing (which can break immutability). |
+| All fields are `private final`      | Ensures state is set only once.                     |
+| No setters                          | Prevent changing values after construction.         |
+| Constructor sets all fields         | Object is fully initialized during construction.    |
+| Defensive copies for mutable fields | Prevent original references from leaking.           |
+| Return copies of mutable objects    | Avoid exposing internal state.                      |
+
+---
+
+## ⚠️ Mutable Fields Pitfall
+
+Even if your class is final and fields are final, **exposing mutable fields** breaks immutability:
+
+```java
+// Bad example
+public List<String> getHobbies() {
+    return hobbies; // allows caller to modify internal list!
+}
+```
+
+✅ Use:
+
+```java
+return new ArrayList<>(hobbies);
+```
+
+---
+
+## 🧪 Sample Usage
+
+```java
+Person p = new Person("Alice", 30, List.of("Reading", "Cycling"));
+System.out.println(p.getName()); // Alice
+p.getHobbies().add("Gaming");    // No effect on original 'p' object
+```
+
+---

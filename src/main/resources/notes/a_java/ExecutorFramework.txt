@@ -1,0 +1,122 @@
+The **Executor Framework** in Java is a powerful and flexible tool for managing threads and asynchronous task execution. It abstracts the low-level details of thread creation, management, and synchronization, making concurrent programming easier and more scalable.
+
+---
+
+### 🔧 Core Components of the Executor Framework
+
+1. ### **Executor Interface**
+
+   * The root interface of the framework.
+   * Has a single method:
+
+     ```java
+     void execute(Runnable command);
+     ```
+   * Typically used for fire-and-forget tasks.
+
+2. ### **ExecutorService Interface**
+
+   * Extends `Executor` and adds methods for lifecycle management and returning results.
+   * Common methods:
+
+     ```java
+     Future<?> submit(Runnable task);
+     <T> Future<T> submit(Callable<T> task);
+     void shutdown();
+     List<Runnable> shutdownNow();
+     ```
+   * Can return `Future` objects to track task completion.
+
+3. ### **ScheduledExecutorService Interface**
+
+   * Extends `ExecutorService` to support scheduling tasks.
+   * Methods:
+
+     ```java
+     ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit);
+     ScheduledFuture<?> scheduleAtFixedRate(...);
+     ```
+
+---
+
+### 🧱 Key Implementations
+
+Java provides factory methods to create executor instances via the `Executors` utility class:
+
+1. **SingleThreadExecutor**
+
+   ```java
+   ExecutorService executor = Executors.newSingleThreadExecutor();
+   ```
+
+   * Executes tasks sequentially in a single thread.
+
+2. **FixedThreadPool**
+
+   ```java
+   ExecutorService executor = Executors.newFixedThreadPool(5);
+   ```
+
+   * A fixed number of threads; tasks are queued if all threads are busy.
+
+3. **CachedThreadPool**
+
+   ```java
+   ExecutorService executor = Executors.newCachedThreadPool();
+   ```
+
+   * Creates new threads as needed; reuses idle threads.
+
+4. **ScheduledThreadPool**
+
+   ```java
+   ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
+   ```
+
+   * Used for scheduled or periodic task execution.
+
+---
+
+### 🧵 Runnable vs Callable
+
+| Interface  | Return Type   | Exception Handling              |
+| ---------- | ------------- | ------------------------------- |
+| `Runnable` | `void`        | Cannot throw checked exceptions |
+| `Callable` | `V` (generic) | Can throw checked exceptions    |
+
+---
+
+### 🧪 Example
+
+```java
+import java.util.concurrent.*;
+
+public class ExecutorExample {
+    public static void main(String[] args) throws Exception {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        Callable<String> task = () -> {
+            Thread.sleep(1000);
+            return "Task Completed";
+        };
+
+        Future<String> future = executor.submit(task);
+
+        System.out.println("Task submitted...");
+        System.out.println("Result: " + future.get()); // waits for task to complete
+
+        executor.shutdown();
+    }
+}
+```
+
+---
+
+### ✅ Benefits of Using Executor Framework
+
+* **Decouples** task submission from execution policy.
+* **Manages threads** efficiently with pooling.
+* **Improves scalability** for concurrent applications.
+* **Supports scheduling** and delayed/periodic tasks.
+
+---
