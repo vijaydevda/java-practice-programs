@@ -1,0 +1,182 @@
+{
+  "main": {
+    "id": "84681213a35d6c69",
+    "type": "split",
+    "children": [
+      {
+        "id": "faa229d6f7ec53c7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5f8ead195403b634",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "java/Garbage Collection.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Garbage Collection"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "455f1b4b18c26210",
+    "type": "split",
+    "children": [
+      {
+        "id": "42de35d616ddf20e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "74dc97ea79b96769",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "e05ceda6fc5a02af",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "2d67bde3fda38e3e",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "right": {
+    "id": "26a77cdab07c2fdd",
+    "type": "split",
+    "children": [
+      {
+        "id": "6b4a4552d6280d0e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "13acacab89ee11fe",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "java/Garbage Collection.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Garbage Collection"
+            }
+          },
+          {
+            "id": "8ea538c1554a4ea2",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "java/Garbage Collection.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Garbage Collection"
+            }
+          },
+          {
+            "id": "b7e75ed56a3ccb00",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "b1fa23e2567ef776",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "java/Garbage Collection.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Garbage Collection"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "5f8ead195403b634",
+  "lastOpenFiles": [
+    "java/JVM Memory Model.md",
+    "java/Garbage Collection.md",
+    "java/Java Memory Model.md",
+    "spring/Spring Bean Lifecycle.md",
+    "java",
+    "Untitled.md",
+    "spring",
+    "Welcome.md"
+  ]
+}
