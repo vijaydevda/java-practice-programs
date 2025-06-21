@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "java/Garbage Collection.md",
+                "file": "kafka/Kafka.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Garbage Collection"
+              "title": "Kafka"
             }
           }
         ]
@@ -170,13 +170,18 @@
   },
   "active": "5f8ead195403b634",
   "lastOpenFiles": [
-    "java/JVM Memory Model.md",
-    "java/Garbage Collection.md",
-    "java/Java Memory Model.md",
+    "kafka/Kafka_Cheatsheet_and_Interview_Guide.docx",
+    "spring/Validation In Spring Boot.md",
+    "kafka/Kafka.md",
+    "kafka",
     "spring/Spring Bean Lifecycle.md",
+    "spring/Global Exception Handling In Spring.md",
+    "java/Garbage Collection.md",
+    "Welcome.md",
+    "java/JVM Memory Model.md",
+    "java/Java Memory Model.md",
     "java",
     "Untitled.md",
-    "spring",
-    "Welcome.md"
+    "spring"
   ]
 }
